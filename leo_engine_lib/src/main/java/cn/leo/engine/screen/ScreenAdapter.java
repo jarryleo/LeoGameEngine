@@ -19,7 +19,15 @@ public class ScreenAdapter {
     /**
      * 默认屏幕宽度 dp
      */
-    static int mGlobalDesignWidthInDp = 360;
+    static int screenWidthInDp = 360;
+    /**
+     * 屏幕高度dp值
+     */
+    static int screenHeightInDp = 360;
+    /**
+     * dp和px 比值
+     */
+    static float density = 1;
 
     /**
      * Reference from: https://mp.weixin.qq.com/s/d9QCoBP6kV9VSWvVldVVwA
@@ -30,7 +38,7 @@ public class ScreenAdapter {
             return;
         }
         if (designWidthInDp <= 0) {
-            designWidthInDp = mGlobalDesignWidthInDp;
+            designWidthInDp = screenWidthInDp;
         }
         final DisplayMetrics systemDm = Resources.getSystem().getDisplayMetrics();
         final DisplayMetrics appDm = activity.getApplication().getResources().getDisplayMetrics();
@@ -39,9 +47,12 @@ public class ScreenAdapter {
                 == Configuration.ORIENTATION_PORTRAIT);
         if (isVerticalSlide) {
             activityDm.density = activityDm.widthPixels / (float) designWidthInDp;
+            screenHeightInDp = (int) (activityDm.heightPixels / activityDm.density + 0.5f);
         } else {
             activityDm.density = activityDm.heightPixels / (float) designWidthInDp;
+            screenHeightInDp = (int) (activityDm.widthPixels / activityDm.density + 0.5f);
         }
+        density = activityDm.density;
         activityDm.scaledDensity = activityDm.density * (systemDm.scaledDensity / systemDm.density);
         activityDm.densityDpi = (int) (160 * activityDm.density + 0.5);
         appDm.density = activityDm.density;

@@ -2,6 +2,7 @@ package cn.leo.engine.cell;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.support.annotation.NonNull;
 
 /**
  * @author : Jarry Leo
@@ -9,18 +10,29 @@ import android.graphics.Paint;
  * 动画元素
  */
 public class AnimCell extends BaseCell {
+    /**动画固定角左上*/
+    public static final int CORNER_TOP_LEFT = 0;
+    /**动画固定角右上*/
+    public static final int CORNER_TOP_RIGHT = 1;
+    /**动画固定角左下*/
+    public static final int CORNER_BOTTOM_LEFT = 2;
+    /**动画固定角右下*/
+    public static final int CORNER_BOTTOM_RIGHT = 3;
+
+
+
     @Override
     protected Paint initPaint() {
         return null;
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(@NonNull Canvas canvas) {
 
     }
 
     @Override
     public int getCellType() {
-        return 0;
+        return TYPE_ANIMATION;
     }
 }

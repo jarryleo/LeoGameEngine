@@ -2,6 +2,7 @@ package cn.leo.engine.cell;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.support.annotation.NonNull;
 
 /**
  * @author : Jarry Leo
@@ -14,7 +15,7 @@ public class CustomCell extends BaseCell {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(@NonNull Canvas canvas) {
 
     }
 
