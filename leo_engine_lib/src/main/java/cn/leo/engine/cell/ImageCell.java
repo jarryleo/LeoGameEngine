@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 /**
  * @author : Jarry Leo
  * @date : 2018/10/18 14:29
+ * 图片元素
  */
 public class ImageCell extends BaseCell {
     /**

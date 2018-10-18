@@ -1,6 +1,7 @@
 package cn.leo.engine;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -9,6 +10,8 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import cn.leo.engine.screen.ScreenAdapter;
 
 /**
  * @author : Jarry Leo
@@ -46,6 +49,8 @@ public class LeoEngine extends SurfaceView {
         setZOrderOnTop(true);
         //设置本类回调
         mHolder.addCallback(mCallBack);
+        //屏幕适配
+        ScreenAdapter.adaptScreen((Activity) mContext, 0);
     }
 
 
