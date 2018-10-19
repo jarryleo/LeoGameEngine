@@ -11,7 +11,7 @@ import android.support.annotation.NonNull;
 public class CustomCell extends BaseCell {
     @Override
     protected Paint initPaint() {
-        return null;
+        return new Paint(Paint.ANTI_ALIAS_FLAG);
     }
 
     @Override

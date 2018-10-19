@@ -25,6 +25,10 @@ public class ImageCell extends BaseCell {
     private Rect mSource;
     private Rect mTarget;
 
+    public ImageCell(Bitmap bitmap) {
+        mBitmap = bitmap;
+    }
+
     @Override
     protected Paint initPaint() {
         return new Paint(Paint.ANTI_ALIAS_FLAG);

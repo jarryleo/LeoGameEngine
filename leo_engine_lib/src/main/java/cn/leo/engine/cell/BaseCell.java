@@ -36,7 +36,7 @@ public abstract class BaseCell implements Comparable<BaseCell> {
     /**
      * 元素类型
      */
-    private int mCellType;
+    private int mCellType = getCellType();
     /**
      * 元素默认画笔
      */
@@ -94,11 +94,23 @@ public abstract class BaseCell implements Comparable<BaseCell> {
     protected abstract Paint initPaint();
 
     /**
+     * 子类调用绘制方法
+     *
+     * @param canvas 画布
+     */
+    protected abstract void draw(@NonNull Canvas canvas);
+
+    /**
      * 引擎调用绘制方法
      *
      * @param canvas 画布
      */
-    public abstract void draw(@NonNull Canvas canvas);
+
+    public void dispatchDraw(@NonNull Canvas canvas) {
+        if (isVisible()) {
+            draw(canvas);
+        }
+    }
 
     /**
      * 获取元素类型

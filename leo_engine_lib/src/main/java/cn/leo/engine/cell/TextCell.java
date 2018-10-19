@@ -1,11 +1,14 @@
 package cn.leo.engine.cell;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
+
+import cn.leo.engine.screen.ScreenUtil;
 
 /**
  * @author : Jarry Leo
@@ -18,21 +21,23 @@ public class TextCell extends BaseCell {
      */
     private String mText;
     /**
-     * 每行多少个字
+     * 每行多少个字,用于换行
      */
     private int mLineOfChars = 200;
     /**
      * 文字大小
      */
-    private int mTextSize;
+    private int mTextSize = 16;
     /**
      * 文字颜色
      */
-    private int mTextColor;
+    private int mTextColor = Color.WHITE;
 
     @Override
     protected Paint initPaint() {
-        return new TextPaint();
+        TextPaint textPaint = new TextPaint();
+        textPaint.setShadowLayer(1, 1, 1, Color.BLACK);
+        return textPaint;
     }
 
     @Override
@@ -54,5 +59,37 @@ public class TextCell extends BaseCell {
     @Override
     public int getCellType() {
         return TYPE_STRING;
+    }
+
+    public String getText() {
+        return mText;
+    }
+
+    public void setText(String text) {
+        mText = text;
+    }
+
+    public int getLineOfChars() {
+        return mLineOfChars;
+    }
+
+    public void setLineOfChars(int lineOfChars) {
+        mLineOfChars = lineOfChars;
+    }
+
+    public int getTextSize() {
+        return mTextSize;
+    }
+
+    public void setTextSize(int textSize) {
+        mTextSize = ScreenUtil.dp2px(textSize);
+    }
+
+    public int getTextColor() {
+        return mTextColor;
+    }
+
+    public void setTextColor(int textColor) {
+        mTextColor = textColor;
     }
 }

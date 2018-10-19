@@ -12,6 +12,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import cn.leo.engine.screen.ScreenAdapter;
+import cn.leo.engine.screen.ScreenUtil;
 
 /**
  * @author : Jarry Leo
@@ -68,9 +69,9 @@ public class LeoEngine extends SurfaceView {
         public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             //窗口改变状态
             //游戏可见区域宽
-            mGameWindowWidth = width;
+            mGameWindowWidth = ScreenUtil.px2dp(width);
             //游戏可见区域高
-            mGameWindowHeight = height;
+            mGameWindowHeight = ScreenUtil.px2dp(height);
         }
 
         @Override
