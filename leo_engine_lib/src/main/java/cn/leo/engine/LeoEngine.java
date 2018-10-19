@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import cn.leo.engine.scene.BaseScene;
 import cn.leo.engine.screen.ScreenAdapter;
 import cn.leo.engine.screen.ScreenUtil;
 
@@ -23,9 +24,21 @@ public class LeoEngine extends SurfaceView {
 
     private SurfaceHolder mHolder;
     private Context mContext;
+    //游戏窗口可见状态
     private boolean mGameWindowIsVisiable;
-    private int mGameWindowWidth;
-    private int mGameWindowHeight;
+    /**
+     * 游戏窗口宽度,单位dp
+     */
+    private int mGameWindowWidthInDp;
+    /**
+     * 游戏窗口高度,单位dp
+     */
+    private int mGameWindowHeightInDp;
+    /**
+     * 引擎执行场景
+     */
+    private BaseScene mScene;
+
 
     public LeoEngine(Context context) {
         this(context, null);
@@ -69,9 +82,9 @@ public class LeoEngine extends SurfaceView {
         public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             //窗口改变状态
             //游戏可见区域宽
-            mGameWindowWidth = ScreenUtil.px2dp(width);
+            mGameWindowWidthInDp = ScreenUtil.px2dp(width);
             //游戏可见区域高
-            mGameWindowHeight = ScreenUtil.px2dp(height);
+            mGameWindowHeightInDp = ScreenUtil.px2dp(height);
         }
 
         @Override
@@ -81,7 +94,21 @@ public class LeoEngine extends SurfaceView {
         }
     };
 
-    private void engineThreadCore() {
+    /**
+     * 加载场景
+     *
+     * @param scene 场景
+     */
+    public void loadScene(BaseScene scene) {
+        mScene = scene;
+        drawStep();
+    }
+
+    public void drawStep() {
+        core();
+    }
+
+    private void core() {
         Canvas canvas = mHolder.lockCanvas();
         drawFrame(canvas);
         mHolder.unlockCanvasAndPost(canvas);
@@ -90,6 +117,17 @@ public class LeoEngine extends SurfaceView {
     private void drawFrame(Canvas canvas) {
         //清空画布
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        //绘制场景
+        if (mScene != null) {
+            mScene.dispatchDraw(canvas);
+        }
+    }
 
+    public int getGameWindowWidthInDp() {
+        return mGameWindowWidthInDp;
+    }
+
+    public int getGameWindowHeightInDp() {
+        return mGameWindowHeightInDp;
     }
 }

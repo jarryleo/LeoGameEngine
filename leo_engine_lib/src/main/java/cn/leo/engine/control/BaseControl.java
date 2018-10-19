@@ -12,4 +12,5 @@ package cn.leo.engine.control;
  * 声音控制,声音播放,暂停等
  */
 public class BaseControl {
+
 }

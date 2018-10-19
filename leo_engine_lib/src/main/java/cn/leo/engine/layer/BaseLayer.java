@@ -1,5 +1,6 @@
 package cn.leo.engine.layer;
 
+import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 
 import java.util.Set;
@@ -29,7 +30,14 @@ public class BaseLayer {
         mCells.remove(cell);
     }
 
-    public void reSort(){
-        
+    public void reSort() {
+
+    }
+
+    public void dispatchDraw(@NonNull Canvas canvas) {
+        for (BaseCell cell : mCells) {
+            cell.dispatchDraw(canvas);
+        }
+
     }
 }
