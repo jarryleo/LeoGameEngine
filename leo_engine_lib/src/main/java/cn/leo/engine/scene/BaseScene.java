@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.leo.engine.control.BaseControl;
 import cn.leo.engine.layer.BaseLayer;
 
 /**
@@ -21,9 +22,24 @@ import cn.leo.engine.layer.BaseLayer;
  * 场景可销毁!
  */
 public class BaseScene {
+    /**
+     * 上下文
+     */
     private Context mContext;
+    /**
+     * 场景控制器
+     */
+    private BaseControl mControl;
+
+    /**
+     * 图层集合
+     */
     private List<BaseLayer> mLayers = new ArrayList<>();
 
+    /**
+     * 上下文构造
+     * @param context 上下文
+     */
     public BaseScene(Context context) {
         mContext = context;
     }
@@ -44,5 +60,20 @@ public class BaseScene {
         for (BaseLayer layer : mLayers) {
             layer.dispatchDraw(canvas);
         }
+    }
+
+    /**
+     * 设置场景控制器
+     * @param control 控制器
+     */
+    public void setControl(BaseControl control) {
+        mControl = control;
+    }
+
+    /**
+     * 引擎获取场景控制器
+     */
+    public BaseControl getControl() {
+        return mControl;
     }
 }

@@ -107,9 +107,31 @@ public abstract class BaseCell implements Comparable<BaseCell> {
      */
 
     public void dispatchDraw(@NonNull Canvas canvas) {
-        if (isVisible()) {
+        if (isVisible() && !isDestroy()) {
             draw(canvas);
         }
+    }
+
+    /**
+     * 移动到指定坐标
+     *
+     * @param x 坐标
+     * @param y 坐标
+     */
+    public void moveTo(float x, float y) {
+        setX(x);
+        setY(y);
+    }
+
+    /**
+     * 移动相对坐标
+     *
+     * @param x 坐标
+     * @param y 坐标
+     */
+    public void moveBy(float x, float y) {
+        setX(x + getX());
+        setY(y + getY());
     }
 
     /**

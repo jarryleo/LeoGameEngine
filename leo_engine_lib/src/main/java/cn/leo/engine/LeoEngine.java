@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -102,18 +103,31 @@ public class LeoEngine extends SurfaceView {
     public void loadScene(BaseScene scene) {
         mScene = scene;
         drawStep();
+        //清理上一次场景缓存
+        System.gc();
     }
 
+    /**
+     * 绘制一帧图像
+     */
     public void drawStep() {
         core();
     }
 
+    /**
+     * 图像绘制
+     */
     private void core() {
         Canvas canvas = mHolder.lockCanvas();
         drawFrame(canvas);
         mHolder.unlockCanvasAndPost(canvas);
     }
 
+    /**
+     * 绘制场景
+     *
+     * @param canvas 画布
+     */
     private void drawFrame(Canvas canvas) {
         //清空画布
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
@@ -123,11 +137,29 @@ public class LeoEngine extends SurfaceView {
         }
     }
 
+    /**
+     * 获取游戏区域宽度值dp
+     */
     public int getGameWindowWidthInDp() {
         return mGameWindowWidthInDp;
     }
 
+    /**
+     * 获取游戏区域高度值dp
+     */
     public int getGameWindowHeightInDp() {
         return mGameWindowHeightInDp;
+    }
+
+    /**
+     * 触摸事件交给场景控制器
+     *
+     * @param event 事件
+     * @return true 消费事件
+     */
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        //mScene.getControl().onTouchEvent(event);
+        return true;
     }
 }

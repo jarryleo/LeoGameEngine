@@ -1,4 +1,4 @@
-package cn.leo.engine.voice;
+package cn.leo.engine.common;
 
 /**
  * @author : Jarry Leo
@@ -8,4 +8,5 @@ package cn.leo.engine.voice;
  * 框架跟系统的声音播放交互操作
  */
 public class VoicePlayer {
+
 }
