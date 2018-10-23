@@ -107,7 +107,7 @@ public abstract class BaseCell implements Comparable<BaseCell> {
     }
 
     /**
-     * 移动到指定坐标
+     * 移动到指定坐标 单位dp
      *
      * @param x 坐标
      * @param y 坐标
@@ -118,14 +118,14 @@ public abstract class BaseCell implements Comparable<BaseCell> {
     }
 
     /**
-     * 移动相对坐标
+     * 移动相对坐标 单位dp
      *
      * @param x 坐标
      * @param y 坐标
      */
     public void moveBy(float x, float y) {
-        setX(x + getX());
-        setY(y + getY());
+        mX += ScreenUtil.dp2px(x);
+        mY += ScreenUtil.dp2px(y);
     }
 
     /**
@@ -167,7 +167,7 @@ public abstract class BaseCell implements Comparable<BaseCell> {
         this.mDestroy = destroy;
     }
 
-    public float getX() {
+    public float getXInPx() {
         return mX;
     }
 
@@ -175,7 +175,7 @@ public abstract class BaseCell implements Comparable<BaseCell> {
         this.mX = ScreenUtil.dp2px(x);
     }
 
-    public float getY() {
+    public float getYInPx() {
         return mY;
     }
 

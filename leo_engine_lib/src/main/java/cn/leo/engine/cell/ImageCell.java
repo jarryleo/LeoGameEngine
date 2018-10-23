@@ -59,9 +59,9 @@ public class ImageCell extends BaseCell {
         canvas.save();
         canvas.rotate(mRotate);
         if (getWidthInDp() == 0 || getHeightInDp() == 0) {
-            canvas.drawBitmap(mBitmap, getX(), getY(), getPaint());
+            canvas.drawBitmap(mBitmap, getXInPx(), getYInPx(), getPaint());
         } else {
-            canvas.translate(getX(), getY());
+            canvas.translate(getXInPx(), getYInPx());
             canvas.drawBitmap(mBitmap, mSource, mTarget, getPaint());
         }
         canvas.restore();

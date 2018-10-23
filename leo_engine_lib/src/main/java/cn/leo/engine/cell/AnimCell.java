@@ -99,23 +99,23 @@ public class AnimCell extends BaseCell {
         //绘制当前动画帧图片,并且以不同的固定角作为锚点
         switch (mAnchorCorner) {
             case CORNER_TOP_LEFT:
-                canvas.drawBitmap(animBitmap, getX(), getY(), getPaint());
+                canvas.drawBitmap(animBitmap, getXInPx(), getYInPx(), getPaint());
                 break;
             case CORNER_TOP_RIGHT:
-                canvas.drawBitmap(animBitmap, getX() +
+                canvas.drawBitmap(animBitmap, getXInPx() +
                         (mAnimClip.getFrame(0).getBitmap().getWidth()
-                                - animBitmap.getWidth()), getY(), getPaint());
+                                - animBitmap.getWidth()), getYInPx(), getPaint());
                 break;
             case CORNER_BOTTOM_LEFT:
-                canvas.drawBitmap(animBitmap, getX(),
-                        getY() + (mAnimClip.getFrame(0).getBitmap().getHeight()
+                canvas.drawBitmap(animBitmap, getXInPx(),
+                        getYInPx() + (mAnimClip.getFrame(0).getBitmap().getHeight()
                                 - animBitmap.getHeight()), getPaint());
                 break;
             case CORNER_BOTTOM_RIGHT:
                 canvas.drawBitmap(animBitmap,
-                        getX() + (mAnimClip.getFrame(0).getBitmap().getWidth()
+                        getXInPx() + (mAnimClip.getFrame(0).getBitmap().getWidth()
                                 - animBitmap.getWidth()),
-                        getY() + (mAnimClip.getFrame(0).getBitmap().getHeight()
+                        getYInPx() + (mAnimClip.getFrame(0).getBitmap().getHeight()
                                 - animBitmap.getHeight()), getPaint());
                 break;
             default:
@@ -292,9 +292,20 @@ public class AnimCell extends BaseCell {
             return mLoop;
         }
 
+        /**
+         * 设置动画是否循环播放
+         *
+         * @param loop 是否循环
+         */
         public void setLoop(boolean loop) {
             this.mLoop = loop;
         }
+
+        /**
+         * 设置动画播放完后显示最后一帧 (循环播放时无效)
+         *
+         * @param fillAfter 是否显示最后一帧
+         */
 
         public void setFillAfter(boolean fillAfter) {
             mFillAfter = fillAfter;

@@ -23,7 +23,7 @@ import cn.leo.engine.cell.BaseCell;
 public class BaseLayer {
 
     /**
-     * 图层是否需要重新排序
+     * 元素高度是否需要重新排序
      */
     private boolean isNeedReSort;
 
@@ -31,7 +31,7 @@ public class BaseLayer {
 
     public void addCell(@NonNull BaseCell cell) {
         mCells.add(cell);
-
+        needReSortZ();
     }
 
     public void removeCell(@NonNull BaseCell cell) {
@@ -39,11 +39,12 @@ public class BaseLayer {
     }
 
     private void reSort() {
+        isNeedReSort = false;
         Collections.sort(mCells);
     }
 
-    public void setNeedReSort(boolean needReSort) {
-        isNeedReSort = needReSort;
+    public void needReSortZ() {
+        isNeedReSort = true;
     }
 
     public void dispatchDraw(@NonNull Canvas canvas) {

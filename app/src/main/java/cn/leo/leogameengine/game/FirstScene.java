@@ -43,17 +43,19 @@ public class FirstScene extends BaseScene {
         //设置元素大小
         cell.setWidth(60);
         cell.setHeight(60);
-        //设置元素处于屏幕中心
+        //设置元素位置
         cell.setX((getWidth() / 2) - (cell.getWidthInDp() / 2));
-        cell.setY((getHeight() / 2) - (cell.getHeightInDp() / 2));
+        cell.setY(getHeight() - cell.getHeightInDp() * 2);
         //元素添加到帧
         layer.addCell(cell);
 
         //添加文字
         TextCell textCell = new TextCell("飞机大战");
         textCell.setTextAlign(Paint.Align.CENTER);
+        textCell.setTextSize(30);
         textCell.setX(getWidth() / 2);
-        textCell.setY(50);
+        textCell.setY(getHeight() / 2);
+        textCell.setZ(2000);
         layer.addCell(textCell);
 
         //创建动画片段
@@ -66,7 +68,6 @@ public class FirstScene extends BaseScene {
         animCell.setAnimClip(animClip, true);
         animCell.setX((getWidth() / 2) - (animCell.getWidthInDp() / 2));
         layer.addCell(animCell);
-
         //帧添加到场景
         addLayer(layer);
     }

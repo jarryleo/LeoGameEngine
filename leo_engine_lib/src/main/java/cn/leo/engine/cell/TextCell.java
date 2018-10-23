@@ -21,10 +21,6 @@ public class TextCell extends BaseCell {
      */
     private String mText;
     /**
-     * 每行多少个字,用于换行
-     */
-    private int mLineOfChars = 50;
-    /**
      * 文字大小
      */
     private int mTextSize = ScreenUtil.dp2px(16);
@@ -33,18 +29,20 @@ public class TextCell extends BaseCell {
      */
     private int mTextColor = Color.WHITE;
     /**
-     * 文字对象
+     * 文字绘制对象
      */
     private StaticLayout mLayout;
     /**
-     * 属性是否变化,不变化绘制相同对象,防止每次绘制都创建文字对象
+     * 属性是否变化,不变化绘制相同对象,防止每次绘制都创建对象,造成大量垃圾
      */
     private boolean mChanged = true;
 
     public TextCell() {
+        setWidth(360);
     }
 
     public TextCell(String text) {
+        setWidth(360);
         mText = text;
     }
 
@@ -52,8 +50,8 @@ public class TextCell extends BaseCell {
     protected Paint initPaint() {
         TextPaint textPaint = new TextPaint();
         textPaint.setAntiAlias(true);
-        textPaint.setColor(mTextColor);
-        textPaint.setTextSize(mTextSize);
+        textPaint.setColor(Color.WHITE);
+        textPaint.setTextSize(ScreenUtil.dp2px(16));
         textPaint.setTextAlign(Paint.Align.LEFT);
         textPaint.setShadowLayer(1, 1, 1, Color.BLACK);
         return textPaint;
@@ -66,14 +64,14 @@ public class TextCell extends BaseCell {
             mLayout = new StaticLayout(
                     mText,
                     (TextPaint) getPaint(),
-                    mLineOfChars,
+                    getWidthInPx(),
                     Layout.Alignment.ALIGN_NORMAL,
                     1.0F,
                     0.0F,
                     true);
         }
         canvas.save();
-        canvas.translate(getX(), getY());
+        canvas.translate(getXInPx(), getYInPx());
         mLayout.draw(canvas);
         canvas.restore();
     }
@@ -92,22 +90,13 @@ public class TextCell extends BaseCell {
         mChanged = true;
     }
 
-    public int getLineOfChars() {
-        return mLineOfChars;
-    }
-
-    public void setLineOfChars(int lineOfChars) {
-        mLineOfChars = lineOfChars;
-        mChanged = true;
-    }
-
     public int getTextSize() {
         return mTextSize;
     }
 
     public void setTextSize(int textSize) {
         mTextSize = ScreenUtil.dp2px(textSize);
-        getPaint().setTextSize(mTextSize);
+        getPaint().setTextSize(textSize);
         mChanged = true;
     }
 
@@ -117,7 +106,7 @@ public class TextCell extends BaseCell {
 
     public void setTextColor(int textColor) {
         mTextColor = textColor;
-        getPaint().setColor(mTextSize);
+        getPaint().setColor(textColor);
         mChanged = true;
     }
 
