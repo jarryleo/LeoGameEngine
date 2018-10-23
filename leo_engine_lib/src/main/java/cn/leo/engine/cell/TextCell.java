@@ -38,11 +38,12 @@ public class TextCell extends BaseCell {
     private boolean mChanged = true;
 
     public TextCell() {
+        //设置默认文本显示区域宽度为360dp
         setWidth(360);
     }
 
     public TextCell(String text) {
-        setWidth(360);
+        this();
         mText = text;
     }
 
