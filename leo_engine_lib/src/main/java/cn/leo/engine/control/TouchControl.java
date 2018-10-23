@@ -75,4 +75,11 @@ public class TouchControl {
         }
     }
 
+    /**
+     * 销毁场景,回收资源
+     */
+    public void onDestroy() {
+        mCellOnClickListeners.clear();
+        mCellOnTouchListeners.clear();
+    }
 }

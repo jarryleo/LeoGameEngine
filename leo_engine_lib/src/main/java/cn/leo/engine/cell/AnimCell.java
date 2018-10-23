@@ -204,6 +204,11 @@ public class AnimCell extends BaseCell {
         public int getDuration() {
             return mDuration;
         }
+
+        public void onDestroy() {
+            mBitmap.recycle();
+            mBitmap = null;
+        }
     }
 
     /**
@@ -296,5 +301,17 @@ public class AnimCell extends BaseCell {
         public int getFrameCount() {
             return mFrames.size();
         }
+
+        public void onDestroy() {
+            for (int i = mFrames.size(); i > 0; i--) {
+                mFrames.get(i).onDestroy();
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mAnimClip.onDestroy();
     }
 }

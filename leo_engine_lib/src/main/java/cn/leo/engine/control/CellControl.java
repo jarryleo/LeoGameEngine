@@ -48,4 +48,12 @@ public class CellControl {
     public void onCellMove(BaseCell cell) {
 
     }
+
+    /**
+     * 销毁场景,回收资源
+     */
+    public void onDestroy() {
+
+    }
+
 }

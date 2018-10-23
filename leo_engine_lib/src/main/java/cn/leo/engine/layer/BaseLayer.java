@@ -36,8 +36,21 @@ public class BaseLayer {
 
     public void dispatchDraw(@NonNull Canvas canvas) {
         for (BaseCell cell : mCells) {
+            if (cell.isDestroy()) {
+                mCells.remove(cell);
+            }
             cell.dispatchDraw(canvas);
         }
 
+    }
+
+    /**
+     * 销毁场景,回收资源
+     */
+    public void onDestroy() {
+        for (BaseCell cell : mCells) {
+            cell.onDestroy();
+        }
+        mCells.clear();
     }
 }

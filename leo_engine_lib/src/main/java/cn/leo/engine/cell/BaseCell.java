@@ -178,7 +178,7 @@ public abstract class BaseCell implements Comparable<BaseCell> {
     }
 
     public void setX(float x) {
-        this.mX = x;
+        this.mX = ScreenUtil.dp2px(x);
     }
 
     public float getY() {
@@ -186,7 +186,7 @@ public abstract class BaseCell implements Comparable<BaseCell> {
     }
 
     public void setY(float y) {
-        this.mY = y;
+        this.mY = ScreenUtil.dp2px(y);
     }
 
     public float getZ() {
@@ -253,5 +253,13 @@ public abstract class BaseCell implements Comparable<BaseCell> {
     public int hashCode() {
         Object[] o = new Object[]{mCellType, mPaint, mVisible, mDestroy, mX, mY, mZ, mWidth, mHeight, mId};
         return Arrays.hashCode(o);
+    }
+
+
+    /**
+     * 销毁场景,回收资源
+     */
+    public void onDestroy() {
+        setDestroy(true);
     }
 }

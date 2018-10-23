@@ -1,10 +1,13 @@
 package cn.leo.engine.cell;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
+
+import cn.leo.engine.common.AssetsUtil;
 
 /**
  * @author : Jarry Leo
@@ -29,6 +32,20 @@ public class ImageCell extends BaseCell {
         mBitmap = bitmap;
     }
 
+    /**
+     * 从资源文件夹加载图片
+     *
+     * @param context           上下文
+     * @param assetsPicFileName 文件名
+     */
+    public ImageCell(Context context, String assetsPicFileName) {
+        Bitmap bitmapFromAsset = AssetsUtil.getBitmapFromAsset(context, assetsPicFileName);
+        if (bitmapFromAsset == null) {
+            throw new IllegalArgumentException("\"" + assetsPicFileName + "\" are not exist in assets folder");
+        }
+        mBitmap = bitmapFromAsset;
+    }
+
     @Override
     protected Paint initPaint() {
         return new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -36,6 +53,9 @@ public class ImageCell extends BaseCell {
 
     @Override
     public void draw(@NonNull Canvas canvas) {
+        if (mBitmap == null) {
+            return;
+        }
         canvas.save();
         canvas.rotate(mRotate);
         if (getWidth() == 0 || getHeight() == 0) {
@@ -79,5 +99,12 @@ public class ImageCell extends BaseCell {
 
     public void setRotate(float rotate) {
         mRotate = rotate;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mBitmap.recycle();
+        mBitmap = null;
     }
 }

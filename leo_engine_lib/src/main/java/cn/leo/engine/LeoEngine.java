@@ -3,15 +3,21 @@ package cn.leo.engine;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Build;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.WindowManager;
 
+import cn.leo.engine.control.TouchControl;
 import cn.leo.engine.scene.BaseScene;
 import cn.leo.engine.screen.ScreenAdapter;
 import cn.leo.engine.screen.ScreenUtil;
@@ -25,8 +31,10 @@ public class LeoEngine extends SurfaceView {
 
     private SurfaceHolder mHolder;
     private Context mContext;
-    //游戏窗口可见状态
-    private boolean mGameWindowIsVisiable;
+    /**
+     * 游戏窗口可见状态
+     */
+    private boolean mGameWindowIsVisible;
     /**
      * 游戏窗口宽度,单位dp
      */
@@ -39,7 +47,22 @@ public class LeoEngine extends SurfaceView {
      * 引擎执行场景
      */
     private BaseScene mScene;
+    /**
+     * 引擎线程
+     */
+    private HandlerThread mHandlerThread = new HandlerThread("LeoEngineThread");
+    private Handler mHandler;
 
+    {
+        mHandlerThread.start();
+        mHandler = new Handler(mHandlerThread.getLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+                drawStep();
+                loop();
+            }
+        };
+    }
 
     public LeoEngine(Context context) {
         this(context, null);
@@ -66,6 +89,8 @@ public class LeoEngine extends SurfaceView {
         mHolder.addCallback(mCallBack);
         //屏幕适配
         ScreenAdapter.adaptScreen((Activity) mContext, 0);
+        //引擎持续工作
+        loop();
     }
 
 
@@ -76,7 +101,8 @@ public class LeoEngine extends SurfaceView {
         @Override
         public void surfaceCreated(SurfaceHolder holder) {
             //窗口可见
-            mGameWindowIsVisiable = true;
+            mGameWindowIsVisible = true;
+            loop();
         }
 
         @Override
@@ -91,7 +117,7 @@ public class LeoEngine extends SurfaceView {
         @Override
         public void surfaceDestroyed(SurfaceHolder holder) {
             //窗口不可见
-            mGameWindowIsVisiable = false;
+            mGameWindowIsVisible = false;
         }
     };
 
@@ -101,11 +127,24 @@ public class LeoEngine extends SurfaceView {
      * @param scene 场景
      */
     public void loadScene(BaseScene scene) {
+        if (mScene != null) {
+            mScene.onDestroy();
+        }
         mScene = scene;
         drawStep();
         //清理上一次场景缓存
         System.gc();
     }
+
+    /**
+     * 引擎循环
+     */
+    private void loop() {
+        if (mGameWindowIsVisible) {
+            mHandler.obtainMessage().sendToTarget();
+        }
+    }
+
 
     /**
      * 绘制一帧图像
@@ -118,9 +157,11 @@ public class LeoEngine extends SurfaceView {
      * 图像绘制
      */
     private void core() {
-        Canvas canvas = mHolder.lockCanvas();
-        drawFrame(canvas);
-        mHolder.unlockCanvasAndPost(canvas);
+        if (mGameWindowIsVisible) {
+            Canvas canvas = mHolder.lockCanvas();
+            drawFrame(canvas);
+            mHolder.unlockCanvasAndPost(canvas);
+        }
     }
 
     /**
@@ -159,7 +200,36 @@ public class LeoEngine extends SurfaceView {
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        //mScene.getControl().onTouchEvent(event);
+        TouchControl touchControl = mScene.getTouchControl();
+        if (touchControl != null) {
+            touchControl.onTouchEvent(event);
+        }
         return true;
     }
+
+    /**
+     * 设置全屏
+     */
+    public LeoEngine setFullScreen() {
+        ((Activity) mContext).getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        return this;
+    }
+
+    /**
+     * 设置竖屏
+     */
+    public LeoEngine setPortrait() {
+        ((Activity) mContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        return this;
+    }
+
+    /**
+     * 设置横屏
+     */
+    public LeoEngine setLandscape() {
+        ((Activity) mContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        return this;
+    }
+
 }

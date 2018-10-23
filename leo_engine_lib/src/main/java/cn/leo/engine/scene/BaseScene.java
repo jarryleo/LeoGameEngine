@@ -7,7 +7,10 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.leo.engine.control.BaseControl;
+import cn.leo.engine.LeoEngine;
+import cn.leo.engine.control.CellControl;
+import cn.leo.engine.control.TouchControl;
+import cn.leo.engine.control.VoiceControl;
 import cn.leo.engine.layer.BaseLayer;
 
 /**
@@ -21,28 +24,45 @@ import cn.leo.engine.layer.BaseLayer;
  * 引擎负责加载声音和画面,并接受场景的控制器操控;
  * 场景可销毁!
  */
-public class BaseScene {
+public abstract class BaseScene {
     /**
      * 上下文
      */
     private Context mContext;
     /**
+     * 游戏引擎
+     */
+    private LeoEngine mEngine;
+    /**
      * 场景控制器
      */
-    private BaseControl mControl;
+    private TouchControl mTouchControl;
+    private VoiceControl mVoiceControl;
+    private CellControl mCellControl;
 
     /**
      * 图层集合
      */
     private List<BaseLayer> mLayers = new ArrayList<>();
+    /**
+     * 场景是否初始化
+     */
+    private boolean mIsInited = false;
 
     /**
-     * 上下文构造
-     * @param context 上下文
+     * 场景构造
+     *
+     * @param leoEngine 引擎
      */
-    public BaseScene(Context context) {
-        mContext = context;
+    public BaseScene(LeoEngine leoEngine) {
+        mEngine = leoEngine;
+        mContext = leoEngine.getContext();
     }
+
+    /**
+     * 初始化场景
+     */
+    public abstract void initScene();
 
     public void addLayer(BaseLayer layer) {
         mLayers.add(layer);
@@ -57,23 +77,105 @@ public class BaseScene {
     }
 
     public void dispatchDraw(@NonNull Canvas canvas) {
-        for (BaseLayer layer : mLayers) {
-            layer.dispatchDraw(canvas);
+        if (mIsInited) {
+            for (BaseLayer layer : mLayers) {
+                layer.dispatchDraw(canvas);
+            }
+        } else {
+            mIsInited = true;
+            initScene();
         }
     }
 
-    /**
-     * 设置场景控制器
-     * @param control 控制器
-     */
-    public void setControl(BaseControl control) {
-        mControl = control;
+    public Context getContext() {
+        return mContext;
     }
 
     /**
-     * 引擎获取场景控制器
+     * 场景开场
      */
-    public BaseControl getControl() {
-        return mControl;
+    public void start() {
+        mEngine.loadScene(this);
+    }
+
+    /**
+     * 获取显示区域宽度 单位dp
+     */
+    public int getWidth() {
+        return mEngine.getGameWindowWidthInDp();
+    }
+
+    /**
+     * 获取显示区域高度 单位dp
+     */
+    public int getHeight() {
+        return mEngine.getGameWindowHeightInDp();
+    }
+
+    /**
+     * 设置触摸控制器
+     *
+     * @param touchControl 触摸控制器
+     */
+    public void setTouchControl(TouchControl touchControl) {
+        mTouchControl = touchControl;
+    }
+
+    /**
+     * 引擎获取触摸控制器
+     */
+    public TouchControl getTouchControl() {
+        return mTouchControl;
+    }
+
+    /**
+     * 设置声音控制器
+     *
+     * @param voiceControl 声音控制器
+     */
+    public void setVoiceControl(VoiceControl voiceControl) {
+        mVoiceControl = voiceControl;
+    }
+
+    /**
+     * 获取声音控制器
+     */
+    public VoiceControl getVoiceControl() {
+        return mVoiceControl;
+    }
+
+    /**
+     * 设置元素控制器
+     *
+     * @param cellControl 元素控制器
+     */
+    public void setCellControl(CellControl cellControl) {
+        mCellControl = cellControl;
+    }
+
+    /**
+     * 获取元素控制器
+     */
+    public CellControl getCellControl() {
+        return mCellControl;
+    }
+
+    /**
+     * 销毁场景,回收资源
+     */
+    public void onDestroy() {
+        for (BaseLayer layer : mLayers) {
+            layer.onDestroy();
+        }
+        clearLayer();
+        if (getTouchControl() != null) {
+            getTouchControl().onDestroy();
+        }
+        if (getVoiceControl() != null) {
+            getVoiceControl().onDestroy();
+        }
+        if (getCellControl() != null) {
+            getCellControl().onDestroy();
+        }
     }
 }

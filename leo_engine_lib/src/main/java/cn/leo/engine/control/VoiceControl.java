@@ -215,4 +215,10 @@ public class VoiceControl {
         sounds.clear();
     }
 
+    /**
+     * 销毁场景,回收资源
+     */
+    public void onDestroy() {
+        clearSounds();
+    }
 }
