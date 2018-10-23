@@ -4,8 +4,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 
-import java.util.Arrays;
-
 import cn.leo.engine.screen.ScreenUtil;
 
 
@@ -33,10 +31,6 @@ public abstract class BaseCell implements Comparable<BaseCell> {
      * 自绘元素
      */
     public static final int TYPE_CUSTOM = 3;
-    /**
-     * 元素类型
-     */
-    private int mCellType = getCellType();
     /**
      * 元素默认画笔
      */
@@ -197,20 +191,28 @@ public abstract class BaseCell implements Comparable<BaseCell> {
         this.mZ = z;
     }
 
-    public int getWidth() {
+    public int getWidthInDp() {
         return mWidth;
     }
 
-    public void setWidth(int width) {
-        this.mWidth = ScreenUtil.dp2px(width);
+    public int getWidthInPx() {
+        return ScreenUtil.dp2px(mWidth);
     }
 
-    public int getHeight() {
+    public void setWidth(int width) {
+        this.mWidth = width;
+    }
+
+    public int getHeightInDp() {
         return mHeight;
     }
 
+    public int getHeightInPx() {
+        return ScreenUtil.dp2px(mHeight);
+    }
+
     public void setHeight(int height) {
-        this.mHeight = ScreenUtil.dp2px(height);
+        this.mHeight = height;
     }
 
     public int getId() {
@@ -228,33 +230,6 @@ public abstract class BaseCell implements Comparable<BaseCell> {
     public void setTag(Object tag) {
         this.mTag = tag;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        BaseCell baseCell = (BaseCell) o;
-        return mCellType == baseCell.mCellType &&
-                mVisible == baseCell.mVisible &&
-                mDestroy == baseCell.mDestroy &&
-                Float.compare(baseCell.mX, mX) == 0 &&
-                Float.compare(baseCell.mY, mY) == 0 &&
-                Float.compare(baseCell.mZ, mZ) == 0 &&
-                Float.compare(baseCell.mWidth, mWidth) == 0 &&
-                Float.compare(baseCell.mHeight, mHeight) == 0 &&
-                mId == baseCell.mId;
-    }
-
-    @Override
-    public int hashCode() {
-        Object[] o = new Object[]{mCellType, mPaint, mVisible, mDestroy, mX, mY, mZ, mWidth, mHeight, mId};
-        return Arrays.hashCode(o);
-    }
-
 
     /**
      * 销毁场景,回收资源

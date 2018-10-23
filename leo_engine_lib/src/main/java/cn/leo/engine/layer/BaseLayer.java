@@ -3,8 +3,10 @@ package cn.leo.engine.layer;
 import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.ListIterator;
 
 import cn.leo.engine.cell.BaseCell;
 
@@ -19,7 +21,13 @@ import cn.leo.engine.cell.BaseCell;
  * 最表层图层覆盖底层图层;
  */
 public class BaseLayer {
-    private Set<BaseCell> mCells = new TreeSet<>();
+
+    /**
+     * 图层是否需要重新排序
+     */
+    private boolean isNeedReSort;
+
+    private List<BaseCell> mCells = new ArrayList<>();
 
     public void addCell(@NonNull BaseCell cell) {
         mCells.add(cell);
@@ -27,21 +35,30 @@ public class BaseLayer {
     }
 
     public void removeCell(@NonNull BaseCell cell) {
-        mCells.remove(cell);
+        cell.setDestroy(true);
     }
 
-    public void reSort() {
+    private void reSort() {
+        Collections.sort(mCells);
+    }
 
+    public void setNeedReSort(boolean needReSort) {
+        isNeedReSort = needReSort;
     }
 
     public void dispatchDraw(@NonNull Canvas canvas) {
-        for (BaseCell cell : mCells) {
+        if (isNeedReSort) {
+            reSort();
+        }
+        ListIterator<BaseCell> iterator = mCells.listIterator();
+        while (iterator.hasNext()) {
+            BaseCell cell = iterator.next();
             if (cell.isDestroy()) {
-                mCells.remove(cell);
+                iterator.remove();
+                continue;
             }
             cell.dispatchDraw(canvas);
         }
-
     }
 
     /**

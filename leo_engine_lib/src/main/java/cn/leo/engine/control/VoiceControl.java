@@ -20,7 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class VoiceControl {
 
-    private final int MAX_STREAMS = 100;
     /**
      * 所有声音单元集合
      */
@@ -45,28 +44,29 @@ public class VoiceControl {
     /**
      * 有参构造
      *
-     * @param context 上下文
+     * @param context    上下文
+     * @param maxStreams 场景声音数量
      */
-    public VoiceControl(Context context) {
+    public VoiceControl(Context context, int maxStreams) {
         mContext = context;
-        initSoundPool();
+        initSoundPool(maxStreams);
     }
 
     /**
      * 初始化声音池
      */
-    private void initSoundPool() {
+    private void initSoundPool(int maxStreams) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             AudioAttributes.Builder attrBuilder = new AudioAttributes.Builder();
             attrBuilder.setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                     .setLegacyStreamType(AudioManager.STREAM_MUSIC)
                     .setUsage(AudioAttributes.USAGE_GAME);
             SoundPool.Builder builder = new SoundPool.Builder();
-            builder.setMaxStreams(MAX_STREAMS)
+            builder.setMaxStreams(maxStreams)
                     .setAudioAttributes(attrBuilder.build());
             mSoundPool = builder.build();
         } else {
-            mSoundPool = new SoundPool(MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
+            mSoundPool = new SoundPool(maxStreams, AudioManager.STREAM_MUSIC, 0);
         }
     }
 
@@ -142,8 +142,8 @@ public class VoiceControl {
         for (Integer id : ids) {
             mSoundPool.pause(sounds.get(id));
         }
-        Set<Integer> idss = soundsStop.keySet();
-        for (Integer id : idss) {
+        Set<Integer> stopIds = soundsStop.keySet();
+        for (Integer id : stopIds) {
             mSoundPool.pause(soundsStop.get(id));
         }
     }
@@ -156,8 +156,8 @@ public class VoiceControl {
         for (Integer id : ids) {
             mSoundPool.resume(sounds.get(id));
         }
-        Set<Integer> idss = soundsStop.keySet();
-        for (Integer id : idss) {
+        Set<Integer> stopIds = soundsStop.keySet();
+        for (Integer id : stopIds) {
             mSoundPool.resume(soundsStop.get(id));
         }
     }

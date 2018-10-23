@@ -1,11 +1,15 @@
 package cn.leo.engine.cell;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.util.SparseArray;
+
+import cn.leo.engine.common.AssetsUtil;
+import cn.leo.engine.screen.ScreenUtil;
 
 /**
  * @author : Jarry Leo
@@ -56,11 +60,11 @@ public class AnimCell extends BaseCell {
     }
 
     public AnimCell(AnimClip animClip) {
-        mAnimClip = animClip;
+        setAnimClip(animClip);
     }
 
     public AnimCell(AnimClip animClip, int anchorCorner) {
-        mAnimClip = animClip;
+        setAnimClip(animClip);
         mAnchorCorner = anchorCorner;
     }
 
@@ -170,7 +174,7 @@ public class AnimCell extends BaseCell {
      * @param autoStart 替换后自动开始播放
      */
     public void setAnimClip(AnimClip animClip, boolean autoStart) {
-        mAnimClip = animClip;
+        setAnimClip(animClip);
         if (autoStart) {
             start();
         } else {
@@ -178,6 +182,13 @@ public class AnimCell extends BaseCell {
         }
     }
 
+    public void setAnimClip(AnimClip animClip) {
+        mAnimClip = animClip;
+        Bitmap bitmap = mAnimClip.getFrame(0).getBitmap();
+        setWidth(ScreenUtil.px2dp(bitmap.getWidth()));
+        setHeight(ScreenUtil.px2dp(bitmap.getHeight()));
+        mStartTime = 0;
+    }
 
     /**
      * 动画帧
@@ -194,6 +205,11 @@ public class AnimCell extends BaseCell {
 
         public AnimFrame(@NonNull Bitmap bitmap, @IntRange(from = 1) int duration) {
             mBitmap = bitmap;
+            mDuration = duration;
+        }
+
+        public AnimFrame(Context context, @NonNull String bitmapFile, @IntRange(from = 1) int duration) {
+            mBitmap = AssetsUtil.getBitmapFromAsset(context, bitmapFile);
             mDuration = duration;
         }
 
@@ -263,7 +279,7 @@ public class AnimCell extends BaseCell {
                     return null;
                 }
             }
-            for (int i = mFrames.size(); i > 0; i--) {
+            for (int i = mFrames.size() - 1; i >= 0; i--) {
                 int timestamp = mFrames.keyAt(i);
                 if (timestamp <= timeMills) {
                     return mFrames.get(timestamp).getBitmap();

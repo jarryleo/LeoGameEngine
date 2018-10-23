@@ -58,7 +58,7 @@ public class ImageCell extends BaseCell {
         }
         canvas.save();
         canvas.rotate(mRotate);
-        if (getWidth() == 0 || getHeight() == 0) {
+        if (getWidthInDp() == 0 || getHeightInDp() == 0) {
             canvas.drawBitmap(mBitmap, getX(), getY(), getPaint());
         } else {
             canvas.translate(getX(), getY());
@@ -70,13 +70,13 @@ public class ImageCell extends BaseCell {
     @Override
     public void setWidth(int width) {
         super.setWidth(width);
-        mTarget = new Rect(0, 0, getWidth(), getHeight());
+        mTarget = new Rect(0, 0, getWidthInPx(), getHeightInPx());
     }
 
     @Override
     public void setHeight(int height) {
         super.setHeight(height);
-        mTarget = new Rect(0, 0, getWidth(), getHeight());
+        mTarget = new Rect(0, 0, getWidthInPx(), getHeightInPx());
     }
 
     @Override

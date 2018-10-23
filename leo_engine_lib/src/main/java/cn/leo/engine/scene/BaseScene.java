@@ -47,7 +47,7 @@ public abstract class BaseScene {
     /**
      * 场景是否初始化
      */
-    private boolean mIsInited = false;
+    private boolean mHasInit = false;
 
     /**
      * 场景构造
@@ -77,12 +77,12 @@ public abstract class BaseScene {
     }
 
     public void dispatchDraw(@NonNull Canvas canvas) {
-        if (mIsInited) {
+        if (mHasInit) {
             for (BaseLayer layer : mLayers) {
                 layer.dispatchDraw(canvas);
             }
         } else {
-            mIsInited = true;
+            mHasInit = true;
             initScene();
         }
     }
