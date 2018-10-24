@@ -144,7 +144,7 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
      * @param x 坐标
      * @param y 坐标
      */
-    public void centerMoveToDp(float x, float y) {
+    public void centerMoveTo(float x, float y) {
         setX(x - getWidth() / 2);
         setY(y - getHeight() / 2);
     }
@@ -155,7 +155,7 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
      * @param x 坐标
      * @param y 坐标
      */
-    public void centerMoveToPx(float x, float y) {
+    void centerMoveToPx(float x, float y) {
         this.mX = ScreenUtil.px2dp(x) - (getWidth() / 2);
         this.mY = ScreenUtil.px2dp(y) - (getHeight() / 2);
         setRect();
@@ -167,7 +167,7 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
      * @param x 坐标
      * @param y 坐标
      */
-    public void moveByDp(float x, float y) {
+    public void moveBy(float x, float y) {
         mX += x;
         mY += y;
         setRect();
@@ -179,7 +179,7 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
      * @param x 坐标
      * @param y 坐标
      */
-    public void moveByPx(float x, float y) {
+    void moveByPx(float x, float y) {
         mX += ScreenUtil.px2dp(x);
         mY += ScreenUtil.px2dp(y);
         setRect();
@@ -273,6 +273,11 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
         return mRotate;
     }
 
+    /**
+     * 设置旋转角度
+     *
+     * @param rotate 0~360°为一圈
+     */
     public void setRotate(float rotate) {
         mRotate = rotate;
     }

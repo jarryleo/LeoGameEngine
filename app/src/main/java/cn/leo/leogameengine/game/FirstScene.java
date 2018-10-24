@@ -85,7 +85,7 @@ public class FirstScene extends BaseScene {
                         float x = event.getX();
                         float y = event.getY();
                         BaseCell playerCell = player.getCell();
-                        playerCell.centerMoveToDp(x, y);
+                        playerCell.centerMoveTo(x, y);
                         break;
                     case MotionEvent.ACTION_UP:
                         player.setYSpeed(0);
