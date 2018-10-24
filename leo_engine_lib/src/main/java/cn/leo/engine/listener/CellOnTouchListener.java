@@ -14,6 +14,7 @@ public interface CellOnTouchListener {
      *
      * @param cell  触摸元素
      * @param event 事件类型
+     * @return 是否消费事件
      */
-    void onTouch(BaseCell cell, MotionEvent event);
+    boolean onTouch(BaseCell cell, MotionEvent event);
 }

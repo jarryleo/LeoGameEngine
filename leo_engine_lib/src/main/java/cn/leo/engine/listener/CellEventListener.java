@@ -6,13 +6,13 @@ import cn.leo.engine.cell.BaseCell;
  * @author : Jarry Leo
  * @date : 2018/10/24 10:33
  */
-public class CellEventListener {
+public class CellEventListener<T extends BaseCell> {
     /**
      * 元素出现
      *
      * @param cell 元素
      */
-    public void onCellShow(BaseCell cell) {
+    public void onCellShow(T cell) {
 
     }
 
@@ -21,7 +21,7 @@ public class CellEventListener {
      *
      * @param cell 元素
      */
-    public void onCellHide(BaseCell cell) {
+    public void onCellHide(T cell) {
 
     }
 
@@ -30,7 +30,7 @@ public class CellEventListener {
      *
      * @param cell 元素
      */
-    public void onCellPlayAnim(BaseCell cell) {
+    public void onCellPlayAnim(T cell) {
 
     }
 
@@ -39,7 +39,7 @@ public class CellEventListener {
      *
      * @param cell 元素
      */
-    public void onCellMove(BaseCell cell, float lastX, float newX, float lastY, float newY, float lastRotation, float newRotation) {
+    public void onCellMove(T cell, float lastX, float newX, float lastY, float newY, float lastRotation, float newRotation) {
 
     }
 }

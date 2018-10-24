@@ -85,7 +85,7 @@ public class CellControl {
                     mCellEventListener.onCellMove(mCell, lastX, mCell.getXInDp(),
                             lastY, mCell.getYInDp(), lastRotate, mCell.getRotate());
                 }
-                mCell.moveBy(xDistance, yDistance);
+                mCell.moveByDp(xDistance, yDistance);
             }
             lastDrawTime = timeMillis;
         }

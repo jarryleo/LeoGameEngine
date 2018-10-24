@@ -75,9 +75,9 @@ public class FirstScene extends BaseScene {
         //点击背景控制
         List<CellControl.CellProperty> players = getCellControl().getCellProperty("player");
         final CellControl.CellProperty player = players.get(0);
-        getTouchControl().setOnTouchListener(new CellOnTouchListener() {
+        getTouchControl().setCellOnTouch(player.getCell(), new CellOnTouchListener() {
             @Override
-            public void onTouch(BaseCell cell, MotionEvent event) {
+            public boolean onTouch(BaseCell cell, MotionEvent event) {
                 int action = event.getAction();
                 switch (action) {
                     case MotionEvent.ACTION_DOWN:
@@ -94,6 +94,7 @@ public class FirstScene extends BaseScene {
                     default:
                         break;
                 }
+                return true;
             }
         });
 
@@ -111,6 +112,9 @@ public class FirstScene extends BaseScene {
         //创建动画单元
         AnimCell animCell = new AnimCell();
         animCell.setAnimClip(animClip, true);
+        //设置元素大小
+        animCell.setWidth(120);
+        animCell.setHeight(180);
         animCell.setX((getWidth() / 2) - (animCell.getWidthInDp() / 2));
         layer.addCell(animCell);
     }
@@ -152,12 +156,12 @@ public class FirstScene extends BaseScene {
         CellControl.CellProperty bg11 = getCellControl().getCellProperty("bg1").get(0);
         CellControl.CellProperty bg22 = getCellControl().getCellProperty("bg2").get(0);
 
-        bg11.setYSpeed(50);
-        bg22.setYSpeed(50);
+        bg11.setYSpeed(30);
+        bg22.setYSpeed(30);
 
-        CellEventListener cellEventListener = new CellEventListener() {
+        CellEventListener cellEventListener = new CellEventListener<ImageCell>() {
             @Override
-            public void onCellMove(BaseCell cell, float lastX, float newX, float lastY, float newY, float lastRotation, float newRotation) {
+            public void onCellMove(ImageCell cell, float lastX, float newX, float lastY, float newY, float lastRotation, float newRotation) {
                 BaseCell low = bg1.getYInDp() < bg2.getYInDp() ? bg1 : bg2;
                 if (newY > getHeight()) {
                     cell.setY(low.getYInDp() - cell.getHeightInDp());

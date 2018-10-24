@@ -75,17 +75,31 @@ public class TouchControl {
         mGestureDetectorCompat.onTouchEvent(event);
         float x = event.getX();
         float y = event.getY();
-        BaseCell touchCell = null;
-        for (BaseCell cell : mCellOnTouchListeners.keySet()) {
-            if (cell.getRect().contains((int) x, (int) y)) {
-                mCellOnTouchListeners.get(cell).onTouch(cell, event);
-                touchCell = cell;
+        int action = event.getAction();
+        if (action == MotionEvent.ACTION_DOWN) {
+            for (BaseCell cell : mCellOnTouchListeners.keySet()) {
+                if (cell.getRect().contains((int) x, (int) y)) {
+                    boolean touch = mCellOnTouchListeners.get(cell).onTouch(cell, event);
+                    if (touch) {
+                        touchCell = cell;
+                        break;
+                    }
+                }
             }
+        } else if (action == MotionEvent.ACTION_UP) {
+            touchCell = null;
+        } else if (touchCell != null) {
+            mCellOnTouchListeners.get(touchCell).onTouch(touchCell, event);
         }
         if (mOnTouchListener != null) {
             mOnTouchListener.onTouch(touchCell, event);
         }
     }
+
+    /**
+     * 触摸事件down时选中的cell
+     */
+    private BaseCell touchCell;
 
     private GestureDetectorCompat mGestureDetectorCompat
             = new GestureDetectorCompat(mContext, new GameGestureListener());

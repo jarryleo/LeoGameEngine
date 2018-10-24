@@ -167,9 +167,21 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
      * @param x 坐标
      * @param y 坐标
      */
-    public void moveBy(float x, float y) {
-        mX += ScreenUtil.dp2px(x);
-        mY += ScreenUtil.dp2px(y);
+    public void moveByDp(float x, float y) {
+        mX += x;
+        mY += y;
+        setRect();
+    }
+
+    /**
+     * 移动相对坐标 单位xp
+     *
+     * @param x 坐标
+     * @param y 坐标
+     */
+    public void moveByPx(float x, float y) {
+        mX += ScreenUtil.px2dp(x);
+        mY += ScreenUtil.px2dp(y);
         setRect();
     }
 

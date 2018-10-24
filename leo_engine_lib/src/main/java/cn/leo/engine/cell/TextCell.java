@@ -98,7 +98,7 @@ public class TextCell extends BaseCell {
 
     public void setTextSize(int textSize) {
         mTextSize = ScreenUtil.dp2px(textSize);
-        getPaint().setTextSize(textSize);
+        getPaint().setTextSize(mTextSize);
         mChanged = true;
     }
 
