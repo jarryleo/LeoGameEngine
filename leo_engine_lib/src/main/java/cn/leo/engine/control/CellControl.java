@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import cn.leo.engine.cell.AnimCell;
 import cn.leo.engine.cell.BaseCell;
 import cn.leo.engine.listener.CellEventListener;
+import cn.leo.engine.listener.CellOnClickListener;
+import cn.leo.engine.listener.CellOnTouchListener;
 
 /**
  * @author : Jarry Leo
@@ -24,6 +27,9 @@ public class CellControl {
      * 元素属性
      */
     public class CellProperty {
+        /**
+         * 对应元素
+         */
         BaseCell mCell;
         /**
          * 移动速度,每秒移动距离dp
@@ -34,34 +40,51 @@ public class CellControl {
          * 元素上次绘制时间
          */
         private long lastDrawTime;
+        /**
+         * 元素回调
+         */
         private CellEventListener mCellEventListener;
+        private CellOnClickListener mCellOnClickListener;
+        private CellOnTouchListener mCellOnTouchListener;
+
 
         public CellProperty(BaseCell cell) {
             mCell = cell;
+        }
+
+        public BaseCell getCell() {
+            return mCell;
         }
 
         public float getXSpeed() {
             return mXSpeed;
         }
 
-        public void setXSpeed(float XSpeed) {
-            mXSpeed = XSpeed;
+        public void setXSpeed(float xSpeed) {
+            mXSpeed = xSpeed;
         }
 
         public float getYSpeed() {
             return mYSpeed;
         }
 
-        public void setYSpeed(float YSpeed) {
-            mYSpeed = YSpeed;
+        public void setYSpeed(float ySpeed) {
+            mYSpeed = ySpeed;
         }
 
-        public void cellMove() {
+        void cellMove() {
             long timeMillis = System.currentTimeMillis();
+            float lastX = mCell.getXInDp();
+            float lastY = mCell.getYInDp();
+            float lastRotate = mCell.getRotate();
             if (lastDrawTime > 0) {
                 long l = timeMillis - lastDrawTime;
                 float xDistance = mXSpeed * l / 1000;
                 float yDistance = mYSpeed * l / 1000;
+                if (mCellEventListener != null) {
+                    mCellEventListener.onCellMove(mCell, lastX, mCell.getXInDp(),
+                            lastY, mCell.getYInDp(), lastRotate, mCell.getRotate());
+                }
                 mCell.moveBy(xDistance, yDistance);
             }
             lastDrawTime = timeMillis;
@@ -70,19 +93,62 @@ public class CellControl {
         public void setCellEventListener(CellEventListener cellEventListener) {
             mCellEventListener = cellEventListener;
         }
+
+        public void setCellOnClickListener(CellOnClickListener cellOnClickListener) {
+            mCellOnClickListener = cellOnClickListener;
+        }
+
+        public void setCellOnTouchListener(CellOnTouchListener cellOnTouchListener) {
+            mCellOnTouchListener = cellOnTouchListener;
+        }
+
+        void hideCell() {
+            mCell.setVisible(false);
+            if (mCellEventListener != null) {
+                mCellEventListener.onCellHide(mCell);
+            }
+        }
+
+        void showCell() {
+            mCell.setVisible(true);
+            if (mCellEventListener != null) {
+                mCellEventListener.onCellShow(mCell);
+            }
+        }
+
+        void playAnim() {
+            if (mCell instanceof AnimCell) {
+                AnimCell cell = (AnimCell) mCell;
+                cell.start();
+                if (mCellEventListener != null) {
+                    mCellEventListener.onCellPlayAnim(mCell);
+                }
+            }
+        }
+
+        void playAnim(AnimCell.AnimClip animClip) {
+            if (mCell instanceof AnimCell) {
+                AnimCell cell = (AnimCell) mCell;
+                cell.setAnimClip(animClip, true);
+                cell.start();
+                if (mCellEventListener != null) {
+                    mCellEventListener.onCellPlayAnim(mCell);
+                }
+            }
+        }
     }
 
-    public void addCell(String key, BaseCell cell) {
-        List<CellProperty> properties = mCellProperties.get(key);
+    public void addCell(String cellName, BaseCell cell) {
+        List<CellProperty> properties = mCellProperties.get(cellName);
         if (properties == null) {
             properties = new ArrayList<>();
-            mCellProperties.put(key, properties);
+            mCellProperties.put(cellName, properties);
         }
         properties.add(new CellProperty(cell));
     }
 
-    public List<CellProperty> getCellProperty(String key) {
-        return mCellProperties.get(key);
+    public List<CellProperty> getCellProperty(String cellName) {
+        return mCellProperties.get(cellName);
     }
 
     /**
@@ -111,7 +177,7 @@ public class CellControl {
      * 销毁场景,回收资源
      */
     public void onDestroy() {
-
+        mCellProperties.clear();
     }
 
 }

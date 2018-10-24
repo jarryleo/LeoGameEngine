@@ -12,7 +12,7 @@ public class CellEventListener {
      *
      * @param cell 元素
      */
-    public void onCellVisiable(BaseCell cell) {
+    public void onCellShow(BaseCell cell) {
 
     }
 
@@ -39,7 +39,7 @@ public class CellEventListener {
      *
      * @param cell 元素
      */
-    public void onCellMove(BaseCell cell, int lastX, int newX, int lastY, int newY, int lastRotation, int newRotation) {
+    public void onCellMove(BaseCell cell, float lastX, float newX, float lastY, float newY, float lastRotation, float newRotation) {
 
     }
 }

@@ -2,6 +2,7 @@ package cn.leo.engine.cell;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 
 import cn.leo.engine.screen.ScreenUtil;
@@ -69,6 +70,10 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
      */
     private float mRotate;
     /**
+     * 元素区域
+     */
+    private Rect mRect = new Rect();
+    /**
      * 元素id
      */
     private int mId;
@@ -116,9 +121,44 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
      * @param x 坐标
      * @param y 坐标
      */
-    public void moveTo(float x, float y) {
+    public void moveToDp(float x, float y) {
         setX(x);
         setY(y);
+    }
+
+    /**
+     * 移动到指定坐标 单位px
+     *
+     * @param x 坐标
+     * @param y 坐标
+     */
+    public void moveToPx(float x, float y) {
+        this.mX = ScreenUtil.px2dp(x);
+        this.mY = ScreenUtil.px2dp(y);
+        setRect();
+    }
+
+    /**
+     * 中心点移动到指定坐标 单位dp
+     *
+     * @param x 坐标
+     * @param y 坐标
+     */
+    public void centerMoveToDp(float x, float y) {
+        setX(x - getWidthInDp() / 2);
+        setY(y - getHeightInDp() / 2);
+    }
+
+    /**
+     * 中心点移动到指定坐标 单位px
+     *
+     * @param x 坐标
+     * @param y 坐标
+     */
+    public void centerMoveToPx(float x, float y) {
+        this.mX = ScreenUtil.px2dp(x) - (getWidthInDp() / 2);
+        this.mY = ScreenUtil.px2dp(y) - (getHeightInDp() / 2);
+        setRect();
     }
 
     /**
@@ -130,6 +170,7 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
     public void moveBy(float x, float y) {
         mX += ScreenUtil.dp2px(x);
         mY += ScreenUtil.dp2px(y);
+        setRect();
     }
 
     /**
@@ -172,19 +213,29 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
     }
 
     public float getXInPx() {
+        return ScreenUtil.dp2px(mX);
+    }
+
+    public float getXInDp() {
         return mX;
     }
 
     public void setX(float x) {
-        this.mX = ScreenUtil.dp2px(x);
+        this.mX = x;
+        setRect();
     }
 
     public float getYInPx() {
+        return ScreenUtil.dp2px(mY);
+    }
+
+    public float getYInDp() {
         return mY;
     }
 
     public void setY(float y) {
-        this.mY = ScreenUtil.dp2px(y);
+        this.mY = y;
+        setRect();
     }
 
     public float getZ() {
@@ -193,6 +244,17 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
 
     public void setZ(float z) {
         this.mZ = z;
+    }
+
+    private void setRect() {
+        mRect.set((int) getXInPx(),
+                (int) getYInPx(),
+                (int) getXInPx() + getWidthInPx(),
+                (int) getYInPx() + getHeightInPx());
+    }
+
+    public Rect getRect() {
+        return mRect;
     }
 
     public float getRotate() {
@@ -213,6 +275,7 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
 
     public void setWidth(int width) {
         this.mWidth = width;
+        setRect();
     }
 
     public int getHeightInDp() {
@@ -225,6 +288,7 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
 
     public void setHeight(int height) {
         this.mHeight = height;
+        setRect();
     }
 
     public int getId() {
@@ -258,5 +322,15 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

@@ -34,7 +34,7 @@ public class LeoEngine extends SurfaceView {
     /**
      * 游戏窗口可见状态
      */
-    private boolean mGameWindowIsVisible;
+    private volatile boolean mGameWindowIsVisible;
     /**
      * 游戏窗口宽度,单位dp
      */
@@ -160,7 +160,9 @@ public class LeoEngine extends SurfaceView {
         if (mGameWindowIsVisible) {
             Canvas canvas = mHolder.lockCanvas();
             drawFrame(canvas);
-            mHolder.unlockCanvasAndPost(canvas);
+            if (canvas != null) {
+                mHolder.unlockCanvasAndPost(canvas);
+            }
         }
     }
 
@@ -170,6 +172,9 @@ public class LeoEngine extends SurfaceView {
      * @param canvas 画布
      */
     private void drawFrame(Canvas canvas) {
+        if (canvas == null) {
+            return;
+        }
         //清空画布
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         //绘制场景

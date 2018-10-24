@@ -20,6 +20,8 @@ import cn.leo.engine.listener.CellOnTouchListener;
 public class TouchControl {
     private Context mContext;
 
+    private CellOnTouchListener mOnTouchListener;
+
     public TouchControl(Context context) {
         mContext = context;
     }
@@ -55,6 +57,14 @@ public class TouchControl {
         mCellOnTouchListeners.put(cell, onTouchListener);
     }
 
+    /**
+     * 全局触摸事件
+     *
+     * @param onTouchListener 触摸回调
+     */
+    public void setOnTouchListener(CellOnTouchListener onTouchListener) {
+        mOnTouchListener = onTouchListener;
+    }
 
     /**
      * 触摸事件
@@ -63,17 +73,34 @@ public class TouchControl {
      */
     public void onTouchEvent(MotionEvent event) {
         mGestureDetectorCompat.onTouchEvent(event);
+        float x = event.getX();
+        float y = event.getY();
+        BaseCell touchCell = null;
+        for (BaseCell cell : mCellOnTouchListeners.keySet()) {
+            if (cell.getRect().contains((int) x, (int) y)) {
+                mCellOnTouchListeners.get(cell).onTouch(cell, event);
+                touchCell = cell;
+            }
+        }
+        if (mOnTouchListener != null) {
+            mOnTouchListener.onTouch(touchCell, event);
+        }
     }
 
-    GestureDetectorCompat mGestureDetectorCompat
-            = new GestureDetectorCompat(mContext,
-            new GameGestureListener());
+    private GestureDetectorCompat mGestureDetectorCompat
+            = new GestureDetectorCompat(mContext, new GameGestureListener());
 
     class GameGestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
-
-            return super.onSingleTapUp(e);
+            float x = e.getX();
+            float y = e.getY();
+            for (BaseCell cell : mCellOnClickListeners.keySet()) {
+                if (cell.getRect().contains((int) x, (int) y)) {
+                    mCellOnClickListeners.get(cell).onClick(cell);
+                }
+            }
+            return true;
         }
     }
 

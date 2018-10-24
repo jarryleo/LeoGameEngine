@@ -18,7 +18,7 @@ public class CollisionDetection {
      *
      * @param a
      * @param b
-     * @param overlap //重叠部分，修正误差
+     * @param overlap 允许重叠部分，修正误差
      * @return
      */
     public static boolean isCollision(BaseCell a, BaseCell b, int overlap) {

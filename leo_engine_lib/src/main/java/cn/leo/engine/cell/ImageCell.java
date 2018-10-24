@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 
 import cn.leo.engine.common.AssetsUtil;
+import cn.leo.engine.screen.ScreenUtil;
 
 /**
  * @author : Jarry Leo
@@ -39,7 +40,7 @@ public class ImageCell extends BaseCell {
         if (bitmapFromAsset == null) {
             throw new IllegalArgumentException("\"" + assetsPicFileName + "\" are not exist in assets folder");
         }
-        mBitmap = bitmapFromAsset;
+        setBitmap(bitmapFromAsset);
     }
 
     @Override
@@ -88,6 +89,12 @@ public class ImageCell extends BaseCell {
     public void setBitmap(Bitmap bitmap) {
         mBitmap = bitmap;
         mSource = new Rect(0, 0, mBitmap.getWidth(), mBitmap.getHeight());
+        if (getWidthInDp() == 0) {
+            setWidth(ScreenUtil.px2dp(bitmap.getWidth()));
+        }
+        if (getHeightInDp() == 0) {
+            setHeight(ScreenUtil.px2dp(bitmap.getHeight()));
+        }
     }
 
 

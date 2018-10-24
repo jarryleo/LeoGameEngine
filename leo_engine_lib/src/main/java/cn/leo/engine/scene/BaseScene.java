@@ -39,7 +39,10 @@ public abstract class BaseScene {
     private TouchControl mTouchControl;
     private VoiceControl mVoiceControl;
     private CellControl mCellControl;
-
+    /**
+     * 场景开始时间
+     */
+    private long mStartTime;
     /**
      * 图层集合
      */
@@ -57,6 +60,11 @@ public abstract class BaseScene {
     public BaseScene(LeoEngine leoEngine) {
         mEngine = leoEngine;
         mContext = leoEngine.getContext();
+        //初始化默认控制器
+        mCellControl = new CellControl();
+        mTouchControl = new TouchControl(mContext);
+        mVoiceControl = new VoiceControl(mContext, 20);
+        mStartTime = System.currentTimeMillis();
     }
 
     /**
@@ -88,7 +96,20 @@ public abstract class BaseScene {
             mHasInit = true;
             initScene();
         }
+        //场景运行时间
+        onScenePassTime(System.currentTimeMillis() - mStartTime);
     }
+
+    /**
+     * 子类如果想知道场景运行时间,重写此方法
+     * 画面每执行一帧都会回调此方法
+     *
+     * @param passTimeMills 场景运行时间
+     */
+    protected void onScenePassTime(long passTimeMills) {
+
+    }
+
 
     public Context getContext() {
         return mContext;

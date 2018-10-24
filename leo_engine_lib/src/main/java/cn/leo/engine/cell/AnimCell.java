@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.util.SparseArray;
@@ -56,6 +57,9 @@ public class AnimCell extends BaseCell {
      */
     private long mPausePassedTime;
 
+    private Rect mSource;
+    private Rect mTarget;
+
     public AnimCell() {
     }
 
@@ -66,6 +70,18 @@ public class AnimCell extends BaseCell {
     public AnimCell(AnimClip animClip, int anchorCorner) {
         setAnimClip(animClip);
         mAnchorCorner = anchorCorner;
+    }
+
+    @Override
+    public void setWidth(int width) {
+        super.setWidth(width);
+        mTarget = new Rect(0, 0, getWidthInPx(), getHeightInPx());
+    }
+
+    @Override
+    public void setHeight(int height) {
+        super.setHeight(height);
+        mTarget = new Rect(0, 0, getWidthInPx(), getHeightInPx());
     }
 
     @Override
@@ -101,28 +117,28 @@ public class AnimCell extends BaseCell {
         //绘制当前动画帧图片,并且以不同的固定角作为锚点
         switch (mAnchorCorner) {
             case CORNER_TOP_LEFT:
-                canvas.drawBitmap(animBitmap, getXInPx(), getYInPx(), getPaint());
+                canvas.translate(getXInPx(), getYInPx());
                 break;
             case CORNER_TOP_RIGHT:
-                canvas.drawBitmap(animBitmap, getXInPx() +
+                canvas.translate(getXInPx() +
                         (mAnimClip.getFrame(0).getBitmap().getWidth()
-                                - animBitmap.getWidth()), getYInPx(), getPaint());
+                                - animBitmap.getWidth()), getYInPx());
                 break;
             case CORNER_BOTTOM_LEFT:
-                canvas.drawBitmap(animBitmap, getXInPx(),
+                canvas.translate(getXInPx(),
                         getYInPx() + (mAnimClip.getFrame(0).getBitmap().getHeight()
-                                - animBitmap.getHeight()), getPaint());
+                                - animBitmap.getHeight()));
                 break;
             case CORNER_BOTTOM_RIGHT:
-                canvas.drawBitmap(animBitmap,
-                        getXInPx() + (mAnimClip.getFrame(0).getBitmap().getWidth()
+                canvas.translate(getXInPx() + (mAnimClip.getFrame(0).getBitmap().getWidth()
                                 - animBitmap.getWidth()),
                         getYInPx() + (mAnimClip.getFrame(0).getBitmap().getHeight()
-                                - animBitmap.getHeight()), getPaint());
+                                - animBitmap.getHeight()));
                 break;
             default:
                 break;
         }
+        canvas.drawBitmap(animBitmap, mSource, mTarget, getPaint());
         canvas.restore();
     }
 
@@ -188,8 +204,13 @@ public class AnimCell extends BaseCell {
     public void setAnimClip(AnimClip animClip) {
         mAnimClip = animClip;
         Bitmap bitmap = mAnimClip.getFrame(0).getBitmap();
-        setWidth(ScreenUtil.px2dp(bitmap.getWidth()));
-        setHeight(ScreenUtil.px2dp(bitmap.getHeight()));
+        if (getWidthInDp() == 0) {
+            setWidth(ScreenUtil.px2dp(bitmap.getWidth()));
+        }
+        if (getHeightInDp() == 0) {
+            setHeight(ScreenUtil.px2dp(bitmap.getHeight()));
+        }
+        mSource = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         mStartTime = 0;
     }
 
