@@ -73,42 +73,53 @@ public class TouchControl {
      */
     public void onTouchEvent(MotionEvent event) {
         mGestureDetectorCompat.onTouchEvent(event);
-        float x = event.getX();
-        float y = event.getY();
-        int action = event.getAction();
+        mCellMotionEvent.setMotionEvent(event);
+        float x = mCellMotionEvent.getX();
+        float y = mCellMotionEvent.getY();
+        int action = mCellMotionEvent.getAction();
         if (action == MotionEvent.ACTION_DOWN) {
             for (BaseCell cell : mCellOnTouchListeners.keySet()) {
                 if (cell.getRect().contains((int) x, (int) y)) {
-                    boolean touch = mCellOnTouchListeners.get(cell).onTouch(cell, event);
+
+                    boolean touch = mCellOnTouchListeners.get(cell).onTouch(cell, mCellMotionEvent);
                     if (touch) {
-                        touchCell = cell;
+                        mTouchCell = cell;
                         break;
                     }
                 }
             }
         } else if (action == MotionEvent.ACTION_UP) {
-            touchCell = null;
-        } else if (touchCell != null) {
-            mCellOnTouchListeners.get(touchCell).onTouch(touchCell, event);
+            mTouchCell = null;
+        } else if (mTouchCell != null) {
+            mCellOnTouchListeners.get(mTouchCell).onTouch(mTouchCell, mCellMotionEvent);
         }
         if (mOnTouchListener != null) {
-            mOnTouchListener.onTouch(touchCell, event);
+            mOnTouchListener.onTouch(mTouchCell, mCellMotionEvent);
         }
     }
 
     /**
      * 触摸事件down时选中的cell
      */
-    private BaseCell touchCell;
+    private BaseCell mTouchCell;
+    /**
+     * 触摸事件包装类
+     */
+    CellOnTouchListener.CellMotionEvent mCellMotionEvent
+            = new CellOnTouchListener.CellMotionEvent();
 
+    /**
+     * 触摸手势辅助类
+     */
     private GestureDetectorCompat mGestureDetectorCompat
             = new GestureDetectorCompat(mContext, new GameGestureListener());
 
     class GameGestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
-            float x = e.getX();
-            float y = e.getY();
+            mCellMotionEvent.setMotionEvent(e);
+            float x = mCellMotionEvent.getX();
+            float y = mCellMotionEvent.getY();
             for (BaseCell cell : mCellOnClickListeners.keySet()) {
                 if (cell.getRect().contains((int) x, (int) y)) {
                     mCellOnClickListeners.get(cell).onClick(cell);

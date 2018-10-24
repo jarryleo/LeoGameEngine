@@ -74,16 +74,16 @@ public class CellControl {
 
         void cellMove() {
             long timeMillis = System.currentTimeMillis();
-            float lastX = mCell.getXInDp();
-            float lastY = mCell.getYInDp();
+            float lastX = mCell.getX();
+            float lastY = mCell.getY();
             float lastRotate = mCell.getRotate();
             if (lastDrawTime > 0) {
                 long l = timeMillis - lastDrawTime;
                 float xDistance = mXSpeed * l / 1000;
                 float yDistance = mYSpeed * l / 1000;
                 if (mCellEventListener != null) {
-                    mCellEventListener.onCellMove(mCell, lastX, mCell.getXInDp(),
-                            lastY, mCell.getYInDp(), lastRotate, mCell.getRotate());
+                    mCellEventListener.onCellMove(mCell, lastX, mCell.getX(),
+                            lastY, mCell.getY(), lastRotate, mCell.getRotate());
                 }
                 mCell.moveByDp(xDistance, yDistance);
             }

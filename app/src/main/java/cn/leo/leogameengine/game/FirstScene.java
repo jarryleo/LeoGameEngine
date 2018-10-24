@@ -64,20 +64,20 @@ public class FirstScene extends BaseScene {
         animCell.setWidth(60);
         animCell.setHeight(80);
         //设置元素位置
-        animCell.setX((getWidth() / 2) - (animCell.getWidthInDp() / 2));
-        animCell.setY(getHeight() - animCell.getHeightInDp() * 2);
+        animCell.setX((getWidth() / 2) - (animCell.getWidth() / 2));
+        animCell.setY(getHeight() - animCell.getHeight() * 2);
         //元素添加到帧
         layer.addCell(animCell);
 
         //元素添加到控制器
         getCellControl().addCell("player", animCell);
 
-        //点击背景控制
+        //飞机触摸控制
         List<CellControl.CellProperty> players = getCellControl().getCellProperty("player");
         final CellControl.CellProperty player = players.get(0);
         getTouchControl().setCellOnTouch(player.getCell(), new CellOnTouchListener() {
             @Override
-            public boolean onTouch(BaseCell cell, MotionEvent event) {
+            public boolean onTouch(BaseCell cell, CellMotionEvent event) {
                 int action = event.getAction();
                 switch (action) {
                     case MotionEvent.ACTION_DOWN:
@@ -85,7 +85,7 @@ public class FirstScene extends BaseScene {
                         float x = event.getX();
                         float y = event.getY();
                         BaseCell playerCell = player.getCell();
-                        playerCell.centerMoveToPx(x, y);
+                        playerCell.centerMoveToDp(x, y);
                         break;
                     case MotionEvent.ACTION_UP:
                         player.setYSpeed(0);
@@ -115,7 +115,7 @@ public class FirstScene extends BaseScene {
         //设置元素大小
         animCell.setWidth(120);
         animCell.setHeight(180);
-        animCell.setX((getWidth() / 2) - (animCell.getWidthInDp() / 2));
+        animCell.setX((getWidth() / 2) - (animCell.getWidth() / 2));
         layer.addCell(animCell);
     }
 
@@ -137,38 +137,38 @@ public class FirstScene extends BaseScene {
      * 背景
      */
     private void createBackGround() {
+        //创建背景图层
         BaseLayer backGround = new BaseLayer();
         final ImageCell bg1 = new ImageCell(getContext(), "pic/background.png");
-        float ratio = bg1.getHeightInPx() * 1f / bg1.getWidthInPx();
-
+        //背景图片宽高比
+        float ratio = bg1.getHeight() * 1f / bg1.getWidth();
+        //图片按宽高比填充屏幕
         bg1.setWidth(getWidth());
         bg1.setHeight((int) (getWidth() * ratio));
         backGround.addCell(bg1);
-
+        //克隆一张背景图和上面的拼接加长,以便滚动
         final ImageCell bg2 = (ImageCell) bg1.clone();
-        bg2.setY(-bg1.getHeightInDp());
+        bg2.setY(-bg1.getHeight());
         backGround.addCell(bg2);
-
         addLayer(backGround);
+        //控制2张背景图
         getCellControl().addCell("bg1", bg1);
         getCellControl().addCell("bg2", bg2);
-
         CellControl.CellProperty bg11 = getCellControl().getCellProperty("bg1").get(0);
         CellControl.CellProperty bg22 = getCellControl().getCellProperty("bg2").get(0);
-
+        //滚动
         bg11.setYSpeed(100);
         bg22.setYSpeed(100);
-
+        //监听滚动,一张到底后拼接到另一张开头,以做到无限循环
         CellEventListener cellEventListener = new CellEventListener<ImageCell>() {
             @Override
             public void onCellMove(ImageCell cell, float lastX, float newX, float lastY, float newY, float lastRotation, float newRotation) {
-                BaseCell low = bg1.getYInDp() < bg2.getYInDp() ? bg1 : bg2;
+                BaseCell low = bg1.getY() < bg2.getY() ? bg1 : bg2;
                 if (newY > getHeight()) {
-                    cell.setY(low.getYInDp() - cell.getHeightInDp() + 1);
+                    cell.setY(low.getY() - cell.getHeight() + 1);
                 }
             }
         };
-
         bg11.setCellEventListener(cellEventListener);
         bg22.setCellEventListener(cellEventListener);
 

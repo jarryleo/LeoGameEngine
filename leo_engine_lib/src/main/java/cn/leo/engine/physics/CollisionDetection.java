@@ -18,18 +18,18 @@ public class CollisionDetection {
      *
      * @param a
      * @param b
-     * @param overlap 允许重叠部分，修正误差
+     * @param overlap 允许重叠部分，修正误差 dp
      * @return
      */
     public static boolean isCollision(BaseCell a, BaseCell b, int overlap) {
-        rect1.set((int) a.getXInPx() - overlap,
-                (int) a.getYInPx() - overlap,
-                (int) (a.getXInPx() + a.getWidthInPx() + overlap),
-                (int) (a.getYInPx() + a.getHeightInPx() + overlap));
-        rect2.set((int) b.getXInPx() - overlap,
-                (int) b.getYInPx() - overlap,
-                (int) (b.getXInPx() + b.getWidthInPx() + overlap),
-                (int) (b.getYInPx() + b.getHeightInPx() + overlap));
+        rect1.set((int) a.getX() - overlap,
+                (int) a.getY() - overlap,
+                (int) (a.getX() + a.getWidth() + overlap),
+                (int) (a.getY() + a.getHeight() + overlap));
+        rect2.set((int) b.getX() - overlap,
+                (int) b.getY() - overlap,
+                (int) (b.getX() + b.getWidth() + overlap),
+                (int) (b.getY() + b.getHeight() + overlap));
         return rect1.intersect(rect2);
     }
 }

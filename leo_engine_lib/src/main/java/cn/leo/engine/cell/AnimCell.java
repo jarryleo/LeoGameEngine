@@ -204,10 +204,10 @@ public class AnimCell extends BaseCell {
     public void setAnimClip(AnimClip animClip) {
         mAnimClip = animClip;
         Bitmap bitmap = mAnimClip.getFrame(0).getBitmap();
-        if (getWidthInDp() == 0) {
+        if (getWidth() == 0) {
             setWidth(ScreenUtil.px2dp(bitmap.getWidth()));
         }
-        if (getHeightInDp() == 0) {
+        if (getHeight() == 0) {
             setHeight(ScreenUtil.px2dp(bitmap.getHeight()));
         }
         mSource = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());

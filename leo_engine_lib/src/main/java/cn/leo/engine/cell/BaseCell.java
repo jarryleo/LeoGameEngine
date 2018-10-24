@@ -145,8 +145,8 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
      * @param y 坐标
      */
     public void centerMoveToDp(float x, float y) {
-        setX(x - getWidthInDp() / 2);
-        setY(y - getHeightInDp() / 2);
+        setX(x - getWidth() / 2);
+        setY(y - getHeight() / 2);
     }
 
     /**
@@ -156,8 +156,8 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
      * @param y 坐标
      */
     public void centerMoveToPx(float x, float y) {
-        this.mX = ScreenUtil.px2dp(x) - (getWidthInDp() / 2);
-        this.mY = ScreenUtil.px2dp(y) - (getHeightInDp() / 2);
+        this.mX = ScreenUtil.px2dp(x) - (getWidth() / 2);
+        this.mY = ScreenUtil.px2dp(y) - (getHeight() / 2);
         setRect();
     }
 
@@ -224,11 +224,11 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
         this.mDestroy = destroy;
     }
 
-    public float getXInPx() {
+    float getXInPx() {
         return ScreenUtil.dp2px(mX);
     }
 
-    public float getXInDp() {
+    public float getX() {
         return mX;
     }
 
@@ -237,11 +237,11 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
         setRect();
     }
 
-    public float getYInPx() {
+    float getYInPx() {
         return ScreenUtil.dp2px(mY);
     }
 
-    public float getYInDp() {
+    public float getY() {
         return mY;
     }
 
@@ -259,10 +259,10 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
     }
 
     private void setRect() {
-        mRect.set((int) getXInPx(),
-                (int) getYInPx(),
-                (int) getXInPx() + getWidthInPx(),
-                (int) getYInPx() + getHeightInPx());
+        mRect.set((int) getX(),
+                (int) getY(),
+                (int) getX() + getWidth(),
+                (int) getY() + getHeight());
     }
 
     public Rect getRect() {
@@ -277,11 +277,11 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
         mRotate = rotate;
     }
 
-    public int getWidthInDp() {
+    public int getWidth() {
         return mWidth;
     }
 
-    public int getWidthInPx() {
+    int getWidthInPx() {
         return ScreenUtil.dp2px(mWidth);
     }
 
@@ -290,11 +290,11 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
         setRect();
     }
 
-    public int getHeightInDp() {
+    public int getHeight() {
         return mHeight;
     }
 
-    public int getHeightInPx() {
+    int getHeightInPx() {
         return ScreenUtil.dp2px(mHeight);
     }
 

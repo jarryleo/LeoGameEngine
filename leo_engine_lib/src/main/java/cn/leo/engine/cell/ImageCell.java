@@ -54,7 +54,7 @@ public class ImageCell extends BaseCell {
             return;
         }
         canvas.save();
-        if (getWidthInDp() == 0 || getHeightInDp() == 0) {
+        if (getWidth() == 0 || getHeight() == 0) {
             canvas.rotate(getRotate(), getXInPx() + getWidthInPx() / 2, getYInPx() + getHeightInPx() / 2);
             canvas.drawBitmap(mBitmap, getXInPx(), getYInPx(), getPaint());
         } else {
@@ -89,10 +89,10 @@ public class ImageCell extends BaseCell {
     public void setBitmap(Bitmap bitmap) {
         mBitmap = bitmap;
         mSource = new Rect(0, 0, mBitmap.getWidth(), mBitmap.getHeight());
-        if (getWidthInDp() == 0) {
+        if (getWidth() == 0) {
             setWidth(ScreenUtil.px2dp(bitmap.getWidth()));
         }
-        if (getHeightInDp() == 0) {
+        if (getHeight() == 0) {
             setHeight(ScreenUtil.px2dp(bitmap.getHeight()));
         }
     }
