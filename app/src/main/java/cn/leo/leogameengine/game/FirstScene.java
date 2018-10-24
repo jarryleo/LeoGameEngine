@@ -156,15 +156,15 @@ public class FirstScene extends BaseScene {
         CellControl.CellProperty bg11 = getCellControl().getCellProperty("bg1").get(0);
         CellControl.CellProperty bg22 = getCellControl().getCellProperty("bg2").get(0);
 
-        bg11.setYSpeed(30);
-        bg22.setYSpeed(30);
+        bg11.setYSpeed(100);
+        bg22.setYSpeed(100);
 
         CellEventListener cellEventListener = new CellEventListener<ImageCell>() {
             @Override
             public void onCellMove(ImageCell cell, float lastX, float newX, float lastY, float newY, float lastRotation, float newRotation) {
                 BaseCell low = bg1.getYInDp() < bg2.getYInDp() ? bg1 : bg2;
                 if (newY > getHeight()) {
-                    cell.setY(low.getYInDp() - cell.getHeightInDp());
+                    cell.setY(low.getYInDp() - cell.getHeightInDp() + 1);
                 }
             }
         };
