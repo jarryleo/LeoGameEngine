@@ -23,6 +23,9 @@ import cn.leo.engine.scene.BaseScene;
 public class FirstScene extends BaseScene {
 
 
+    private float mDx;
+    private float mDy;
+
     /**
      * 场景构造
      *
@@ -75,17 +78,21 @@ public class FirstScene extends BaseScene {
         //飞机触摸控制
         List<CellControl.CellProperty> players = getCellControl().getCellProperty("player");
         final CellControl.CellProperty player = players.get(0);
+
         getTouchControl().setCellOnTouch(player.getCell(), new CellOnTouchListener() {
             @Override
             public boolean onTouch(BaseCell cell, CellMotionEvent event) {
                 int action = event.getAction();
+                float x = event.getX();
+                float y = event.getY();
                 switch (action) {
                     case MotionEvent.ACTION_DOWN:
+                        mDx = x - cell.getX();
+                        mDy = y - cell.getY();
+                        break;
                     case MotionEvent.ACTION_MOVE:
-                        float x = event.getX();
-                        float y = event.getY();
                         BaseCell playerCell = player.getCell();
-                        playerCell.centerMoveTo(x, y);
+                        playerCell.moveTo(x - mDx, y - mDy);
                         break;
                     case MotionEvent.ACTION_UP:
                         player.setYSpeed(0);
