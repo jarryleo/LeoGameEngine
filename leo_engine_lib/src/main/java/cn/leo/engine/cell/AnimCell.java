@@ -96,6 +96,8 @@ public class AnimCell extends BaseCell {
             setVisible(false);
             return;
         }
+        canvas.save();
+        canvas.rotate(getRotate(), getXInPx() + getWidthInPx() / 2, getYInPx() + getHeightInPx() / 2);
         //绘制当前动画帧图片,并且以不同的固定角作为锚点
         switch (mAnchorCorner) {
             case CORNER_TOP_LEFT:
@@ -121,6 +123,7 @@ public class AnimCell extends BaseCell {
             default:
                 break;
         }
+        canvas.restore();
     }
 
     @Override

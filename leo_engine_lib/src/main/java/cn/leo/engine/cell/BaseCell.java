@@ -14,7 +14,7 @@ import cn.leo.engine.screen.ScreenUtil;
  * 元素类
  * 元素作为每个图层的基本单元,用来显示图片,文字,动画等!
  */
-public abstract class BaseCell implements Comparable<BaseCell> {
+public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
     /**
      * 图片元素
      */
@@ -64,6 +64,10 @@ public abstract class BaseCell implements Comparable<BaseCell> {
      * 元素高
      */
     private int mHeight;
+    /**
+     * 旋转角度
+     */
+    private float mRotate;
     /**
      * 元素id
      */
@@ -191,6 +195,14 @@ public abstract class BaseCell implements Comparable<BaseCell> {
         this.mZ = z;
     }
 
+    public float getRotate() {
+        return mRotate;
+    }
+
+    public void setRotate(float rotate) {
+        mRotate = rotate;
+    }
+
     public int getWidthInDp() {
         return mWidth;
     }
@@ -236,5 +248,15 @@ public abstract class BaseCell implements Comparable<BaseCell> {
      */
     public void onDestroy() {
         setDestroy(true);
+    }
+
+    @Override
+    public BaseCell clone() {
+        try {
+            return (BaseCell) super.clone();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

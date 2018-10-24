@@ -2,10 +2,13 @@ package cn.leo.leogameengine.game;
 
 import android.graphics.Paint;
 
+import java.util.List;
+
 import cn.leo.engine.LeoEngine;
 import cn.leo.engine.cell.AnimCell;
 import cn.leo.engine.cell.ImageCell;
 import cn.leo.engine.cell.TextCell;
+import cn.leo.engine.control.CellControl;
 import cn.leo.engine.layer.BaseLayer;
 import cn.leo.engine.scene.BaseScene;
 
@@ -27,6 +30,8 @@ public class FirstScene extends BaseScene {
 
     @Override
     public void initScene() {
+        //设置元素控制器
+        setCellControl(new CellControl());
         //创建背景图层
         createBackGround();
         //创建角色图层
@@ -39,8 +44,12 @@ public class FirstScene extends BaseScene {
         createEnemyAnim(layer);
         //帧添加到场景
         addLayer(layer);
+
     }
 
+    /**
+     * 玩家动画
+     */
     private void createPlayerAnim(BaseLayer layer) {
         //创建动画片段
         AnimCell.AnimClip animClip = new AnimCell.AnimClip();
@@ -57,8 +66,20 @@ public class FirstScene extends BaseScene {
         animCell.setY(getHeight() - animCell.getHeightInDp() * 2);
         //元素添加到帧
         layer.addCell(animCell);
+        //元素克隆
+        AnimCell clone = (AnimCell) animCell.clone();
+        layer.addCell(clone);
+        clone.setX(20);
+        clone.setRotate(-30);
+        //控制元素移动
+        getCellControl().addCell("player", animCell);
+        List<CellControl.CellProperty> player = getCellControl().getCellProperty("player");
+        player.get(0).setYSpeed(-100);
     }
 
+    /**
+     * 敌人动画
+     */
     private void createEnemyAnim(BaseLayer layer) {
         //创建动画片段
         AnimCell.AnimClip animClip = new AnimCell.AnimClip();
@@ -69,9 +90,13 @@ public class FirstScene extends BaseScene {
         AnimCell animCell = new AnimCell();
         animCell.setAnimClip(animClip, true);
         animCell.setX((getWidth() / 2) - (animCell.getWidthInDp() / 2));
+        animCell.setRotate(60);
         layer.addCell(animCell);
     }
 
+    /**
+     * 文字
+     */
     private void createText(BaseLayer layer) {
         TextCell textCell = new TextCell("飞机大战");
         textCell.setTextAlign(Paint.Align.CENTER);
@@ -79,9 +104,13 @@ public class FirstScene extends BaseScene {
         textCell.setX(getWidth() / 2);
         textCell.setY(getHeight() / 2);
         textCell.setZ(2000);
+        textCell.setRotate(30);
         layer.addCell(textCell);
     }
 
+    /**
+     * 背景
+     */
     private void createBackGround() {
         BaseLayer backGround = new BaseLayer();
         ImageCell bg = new ImageCell(getContext(), "pic/background.png");

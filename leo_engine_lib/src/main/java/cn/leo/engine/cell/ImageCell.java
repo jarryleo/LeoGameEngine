@@ -21,10 +21,6 @@ public class ImageCell extends BaseCell {
     private Bitmap mBitmap;
 
 
-    /**
-     * 旋转角度
-     */
-    private float mRotate;
     private Rect mSource;
     private Rect mTarget;
 
@@ -57,11 +53,12 @@ public class ImageCell extends BaseCell {
             return;
         }
         canvas.save();
-        canvas.rotate(mRotate);
         if (getWidthInDp() == 0 || getHeightInDp() == 0) {
+            canvas.rotate(getRotate(), getXInPx() + getWidthInPx() / 2, getYInPx() + getHeightInPx() / 2);
             canvas.drawBitmap(mBitmap, getXInPx(), getYInPx(), getPaint());
         } else {
             canvas.translate(getXInPx(), getYInPx());
+            canvas.rotate(getRotate());
             canvas.drawBitmap(mBitmap, mSource, mTarget, getPaint());
         }
         canvas.restore();
@@ -93,13 +90,6 @@ public class ImageCell extends BaseCell {
         mSource = new Rect(0, 0, mBitmap.getWidth(), mBitmap.getHeight());
     }
 
-    public float getRotate() {
-        return mRotate;
-    }
-
-    public void setRotate(float rotate) {
-        mRotate = rotate;
-    }
 
     @Override
     public void onDestroy() {

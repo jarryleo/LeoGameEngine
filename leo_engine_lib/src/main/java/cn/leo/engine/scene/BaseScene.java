@@ -77,6 +77,9 @@ public abstract class BaseScene {
     }
 
     public void dispatchDraw(@NonNull Canvas canvas) {
+        if (mCellControl != null) {
+            mCellControl.onFrame();
+        }
         if (mHasInit) {
             for (BaseLayer layer : mLayers) {
                 layer.dispatchDraw(canvas);

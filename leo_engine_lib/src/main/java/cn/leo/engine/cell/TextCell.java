@@ -73,6 +73,7 @@ public class TextCell extends BaseCell {
         }
         canvas.save();
         canvas.translate(getXInPx(), getYInPx());
+        canvas.rotate(getRotate());
         mLayout.draw(canvas);
         canvas.restore();
     }
