@@ -189,11 +189,8 @@ public class FirstScene extends BaseScene {
         //创建背景图层
         BaseLayer backGround = new BaseLayer();
         final ImageCell bg1 = new ImageCell(this, "pic/background.png");
-        //背景图片宽高比
-        float ratio = bg1.getHeight() * 1f / bg1.getWidth();
         //图片按宽高比填充屏幕
-        bg1.setWidth(getWidth());
-        bg1.setHeight((int) (getWidth() * ratio));
+        bg1.setWidth(getWidth(), true);
         backGround.addCell(bg1);
         //克隆一张背景图和上面的拼接加长,以便滚动
         final ImageCell bg2 = bg1.clone();
