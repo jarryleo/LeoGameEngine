@@ -50,12 +50,12 @@ public class LeoEngine extends SurfaceView {
     /**
      * 引擎线程
      */
-    private HandlerThread mHandlerThread = new HandlerThread("LeoEngineThread");
-    private Handler mHandler;
+    private HandlerThread mHandlerThread1 = new HandlerThread("LeoEngineThread1");
+    private Handler mHandler1;
 
     {
-        mHandlerThread.start();
-        mHandler = new Handler(mHandlerThread.getLooper()) {
+        mHandlerThread1.start();
+        mHandler1 = new Handler(mHandlerThread1.getLooper()) {
             @Override
             public void handleMessage(Message msg) {
                 drawStep();
@@ -141,10 +141,9 @@ public class LeoEngine extends SurfaceView {
      */
     private void loop() {
         if (mGameWindowIsVisible) {
-            mHandler.obtainMessage().sendToTarget();
+            mHandler1.obtainMessage().sendToTarget();
         }
     }
-
 
     /**
      * 绘制一帧图像

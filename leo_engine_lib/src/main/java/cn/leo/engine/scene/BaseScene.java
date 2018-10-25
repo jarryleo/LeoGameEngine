@@ -2,6 +2,7 @@ package cn.leo.engine.scene;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -98,6 +99,25 @@ public abstract class BaseScene {
         }
         //场景运行时间
         onScenePassTime(System.currentTimeMillis() - mStartTime);
+        showFps(canvas);
+    }
+
+    private Paint mPaint = new Paint();
+    private long mLastDrawTime;
+    private long mLastShowFps;
+    private int mFps;
+
+    /**
+     * Debug时候显示FPS
+     */
+    private void showFps(@NonNull Canvas canvas) {
+        long l = System.currentTimeMillis() - mLastDrawTime;
+        if (System.currentTimeMillis() - mLastShowFps > 1000) {
+            mFps = (int) (1000 / l);
+            mLastShowFps = System.currentTimeMillis();
+        }
+        canvas.drawText("FPS:" + mFps, 10, 20, mPaint);
+        mLastDrawTime = System.currentTimeMillis();
     }
 
     /**

@@ -3,8 +3,6 @@ package cn.leo.leogameengine.game;
 import android.graphics.Paint;
 import android.view.MotionEvent;
 
-import java.util.List;
-
 import cn.leo.engine.LeoEngine;
 import cn.leo.engine.cell.BaseCell;
 import cn.leo.engine.cell.ImageCell;
@@ -43,16 +41,19 @@ public class FirstScene extends BaseScene {
         createBackGround();
         //创建角色图层
         BaseLayer layer = new BaseLayer();
-        //添加玩家动画
-        createPlayerAnim(layer);
         //添加文字
         createText(layer);
         //添加敌机动画
         createEnemyAnim(layer);
+        //添加玩家动画
+        createPlayerAnim(layer);
+        //添加子弹
+        createBullet(layer);
         //帧添加到场景
         addLayer(layer);
 
     }
+
 
     /**
      * 玩家动画
@@ -78,8 +79,7 @@ public class FirstScene extends BaseScene {
         getCellControl().addCell("player", animCell);
 
         //飞机触摸控制
-        List<CellControl.CellProperty> players = getCellControl().getCellProperty("player");
-        final CellControl.CellProperty player = players.get(0);
+        final CellControl.CellProperty player = getCellControl().getCellProperty("player").get(0);
 
         getTouchControl().setCellOnTouch(player.getCell(), new CellOnTouchListener() {
             @Override
@@ -107,6 +107,32 @@ public class FirstScene extends BaseScene {
     }
 
     /**
+     * 子弹
+     */
+    private void createBullet(BaseLayer layer) {
+        final ImageCell bullet = ImageCell.build(this, "pic/bullet1.png")
+                .setWidth(5, true)
+                .setY(-50);
+        layer.addCell(bullet);
+        getCellControl().addCell("bullet", bullet);
+        CellControl.CellProperty property = getCellControl().getCellProperty("bullet").get(0);
+        property.setYSpeed(-300);
+        final CellControl.CellProperty player = getCellControl().getCellProperty("player").get(0);
+        property.setCellEventListener(new CellEventListener() {
+            @Override
+            public void onCellMove(BaseCell cell, float lastX, float newX, float lastY, float newY, float lastRotation, float newRotation) {
+                if (newY < -bullet.getHeight()) {
+                    float x = player.getCell().getX();
+                    float y = player.getCell().getY();
+                    bullet.setCenterToX(x + 30)
+                            .setCenterToY(y);
+                }
+            }
+        });
+
+    }
+
+    /**
      * 敌人动画
      */
     private void createEnemyAnim(BaseLayer layer) {
@@ -118,11 +144,18 @@ public class FirstScene extends BaseScene {
         //创建动画单元
         AnimCell animCell = AnimCell.build()
                 .setAnimClip(animClip, true)
-                .setX(10)
-                .setY(20)
                 .setWidth(120)
                 .setHeight(180)
                 .setCenterToX(getWidth() / 2);
+       /* Random random = new Random();
+        for (int i = 0; i < 100; i++) {
+            AnimCell clone = animCell.clone();
+            clone.setWidth(30, true)
+                    .setRotate(random.nextInt(360))
+                    .setX(random.nextInt(330))
+                    .setY(random.nextInt(600));
+            layer.addCell(clone);
+        }*/
         layer.addCell(animCell);
     }
 

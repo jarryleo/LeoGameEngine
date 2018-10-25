@@ -260,7 +260,7 @@ public abstract class BaseCell<T extends BaseCell> implements Comparable<BaseCel
      * 元素中心点y方向移动到坐标
      */
     public T setCenterToY(float centerY) {
-        this.mX = centerY - getWidth() / 2;
+        this.mY = centerY - getHeight() / 2;
         setRect();
         return (T) this;
     }
