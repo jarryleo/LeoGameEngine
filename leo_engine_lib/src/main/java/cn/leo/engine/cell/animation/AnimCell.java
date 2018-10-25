@@ -1,15 +1,12 @@
-package cn.leo.engine.cell;
+package cn.leo.engine.cell.animation;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
-import android.util.SparseArray;
 
-import cn.leo.engine.common.AssetsUtil;
+import cn.leo.engine.cell.BaseCell;
 import cn.leo.engine.screen.ScreenUtil;
 
 /**
@@ -17,7 +14,7 @@ import cn.leo.engine.screen.ScreenUtil;
  * @date : 2018/10/18 15:45
  * 动画元素
  */
-public class AnimCell extends BaseCell {
+public class AnimCell extends BaseCell<AnimCell> {
     /**
      * 动画固定角左上
      */
@@ -57,8 +54,18 @@ public class AnimCell extends BaseCell {
      */
     private long mPausePassedTime;
 
+    /**
+     * 缩放矩形
+     */
     private Rect mSource;
     private Rect mTarget;
+
+    /**
+     * 构造自身
+     */
+    public static AnimCell build() {
+        return new AnimCell();
+    }
 
     public AnimCell() {
     }
@@ -73,15 +80,47 @@ public class AnimCell extends BaseCell {
     }
 
     @Override
-    public void setWidth(int width) {
+    public AnimCell setWidth(int width) {
         super.setWidth(width);
         mTarget = new Rect(0, 0, getWidthInPx(), getHeightInPx());
+        return this;
     }
 
     @Override
-    public void setHeight(int height) {
+    public AnimCell setHeight(int height) {
         super.setHeight(height);
         mTarget = new Rect(0, 0, getWidthInPx(), getHeightInPx());
+        return this;
+    }
+
+    /**
+     * 设置宽度,是否等比设置
+     *
+     * @param width      宽度
+     * @param equalRatio 是否等比
+     */
+    public AnimCell setWidth(int width, boolean equalRatio) {
+        if (equalRatio) {
+            float ratio = getHeightInPx() * 1f / getWidthInPx();
+            setHeight((int) (width * ratio));
+        }
+        setWidth(width);
+        return this;
+    }
+
+    /**
+     * 设置高度,是否等比设置
+     *
+     * @param height     高度
+     * @param equalRatio 是否等比
+     */
+    public AnimCell setHeight(int height, boolean equalRatio) {
+        if (equalRatio) {
+            float ratio = getHeightInPx() * 1f / getWidthInPx();
+            setWidth((int) (height / ratio));
+        }
+        setHeight(height);
+        return this;
     }
 
     @Override
@@ -130,10 +169,10 @@ public class AnimCell extends BaseCell {
                                 - animBitmap.getHeight()));
                 break;
             case CORNER_BOTTOM_RIGHT:
-                canvas.translate(getXInPx() + (mAnimClip.getFrame(0).getBitmap().getWidth()
-                                - animBitmap.getWidth()),
-                        getYInPx() + (mAnimClip.getFrame(0).getBitmap().getHeight()
-                                - animBitmap.getHeight()));
+                canvas.translate(getXInPx()
+                                + (mAnimClip.getFrame(0).getBitmap().getWidth() - animBitmap.getWidth()),
+                        getYInPx()
+                                + (mAnimClip.getFrame(0).getBitmap().getHeight() - animBitmap.getHeight()));
                 break;
             default:
                 break;
@@ -182,8 +221,9 @@ public class AnimCell extends BaseCell {
      *
      * @param anchorCorner 固定角
      */
-    public void setAnchorCorner(int anchorCorner) {
+    public AnimCell setAnchorCorner(int anchorCorner) {
         mAnchorCorner = anchorCorner;
+        return this;
     }
 
     /**
@@ -192,16 +232,23 @@ public class AnimCell extends BaseCell {
      * @param animClip  动画片段
      * @param autoStart 替换后自动开始播放
      */
-    public void setAnimClip(AnimClip animClip, boolean autoStart) {
+    public AnimCell setAnimClip(AnimClip animClip, boolean autoStart) {
         setAnimClip(animClip);
         if (autoStart) {
             start();
         } else {
             mStartTime = 0;
         }
+        return this;
     }
 
-    public void setAnimClip(AnimClip animClip) {
+    /**
+     * 替换动画片段并停止播放
+     *
+     * @param animClip 动画片段
+     * @return 本对象
+     */
+    public AnimCell setAnimClip(AnimClip animClip) {
         mAnimClip = animClip;
         Bitmap bitmap = mAnimClip.getFrame(0).getBitmap();
         if (getWidth() == 0) {
@@ -212,153 +259,9 @@ public class AnimCell extends BaseCell {
         }
         mSource = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         mStartTime = 0;
+        return this;
     }
 
-    /**
-     * 动画帧
-     */
-    public static class AnimFrame {
-        /**
-         * 帧图像
-         */
-        private Bitmap mBitmap;
-        /**
-         * 帧时长
-         */
-        private int mDuration;
-
-        public AnimFrame(@NonNull Bitmap bitmap, @IntRange(from = 1) int duration) {
-            mBitmap = bitmap;
-            mDuration = duration;
-        }
-
-        public AnimFrame(Context context, @NonNull String bitmapFile, @IntRange(from = 1) int duration) {
-            mBitmap = AssetsUtil.getBitmapFromAsset(context, bitmapFile);
-            mDuration = duration;
-        }
-
-        public Bitmap getBitmap() {
-            return mBitmap;
-        }
-
-        public int getDuration() {
-            return mDuration;
-        }
-
-        public void onDestroy() {
-            mBitmap.recycle();
-            mBitmap = null;
-        }
-    }
-
-    /**
-     * 动画片段
-     */
-    public static class AnimClip {
-        /**
-         * 片段所有帧
-         */
-        private SparseArray<AnimFrame> mFrames = new SparseArray<>();
-        /**
-         * 是否重复播放
-         */
-        private boolean mLoop;
-        /**
-         * 片段总时长
-         */
-        private int mTotalTime;
-        /**
-         * 播放完是否保持最后一张画面
-         */
-        private boolean mFillAfter;
-
-        public void addFrame(@NonNull AnimFrame frame) {
-            mFrames.append(mTotalTime, frame);
-            mTotalTime += frame.mDuration;
-        }
-
-        public void removeFrame(int index) {
-            mFrames.remove(index);
-        }
-
-        public AnimFrame getFrame(int index) {
-            return mFrames.get(mFrames.keyAt(index));
-        }
-
-        /**
-         * 根据时间获取帧图像
-         *
-         * @param timeMills 动画执行时间
-         * @return 图像
-         */
-        public Bitmap getFrameBitmapFromTime(long timeMills) {
-            if (mLoop) {
-                if (timeMills > mTotalTime) {
-                    timeMills %= mTotalTime;
-                }
-            } else if (timeMills > mTotalTime) {
-                if (mFillAfter) {
-                    return getFrame(getFrameCount() - 1).getBitmap();
-                } else {
-                    return null;
-                }
-            }
-            for (int i = mFrames.size() - 1; i >= 0; i--) {
-                int timestamp = mFrames.keyAt(i);
-                if (timestamp <= timeMills) {
-                    return mFrames.get(timestamp).getBitmap();
-                }
-            }
-            return getFrame(getFrameCount() - 1).getBitmap();
-        }
-
-        public boolean isLoop() {
-            return mLoop;
-        }
-
-        /**
-         * 设置动画是否循环播放
-         *
-         * @param loop 是否循环
-         */
-        public void setLoop(boolean loop) {
-            this.mLoop = loop;
-        }
-
-        /**
-         * 设置动画播放完后显示最后一帧 (循环播放时无效)
-         *
-         * @param fillAfter 是否显示最后一帧
-         */
-
-        public void setFillAfter(boolean fillAfter) {
-            mFillAfter = fillAfter;
-        }
-
-        /**
-         * 获取片段总时长
-         *
-         * @return 时长
-         */
-        public int getTotalTime() {
-            return mTotalTime;
-        }
-
-        /**
-         * 获取总帧数
-         *
-         * @return 帧数
-         */
-        public int getFrameCount() {
-            return mFrames.size();
-        }
-
-        public void onDestroy() {
-            for (int i = mFrames.size(); i > 0; i--) {
-                mFrames.get(i).onDestroy();
-            }
-        }
-    }
 
     @Override
     public void onDestroy() {

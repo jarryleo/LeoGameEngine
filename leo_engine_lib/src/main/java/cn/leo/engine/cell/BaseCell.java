@@ -15,7 +15,7 @@ import cn.leo.engine.screen.ScreenUtil;
  * 元素类
  * 元素作为每个图层的基本单元,用来显示图片,文字,动画等!
  */
-public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
+public abstract class BaseCell<T extends BaseCell> implements Comparable<BaseCell>, Cloneable {
     /**
      * 图片元素
      */
@@ -81,13 +81,6 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
      * 元素标记，附加数据
      */
     private Object mTag;
-
-    /**
-     * 元素在每帧画面执行的动作，不能有耗时操作和睡眠操作，否则会导致画面卡顿
-     */
-    public void event() {
-
-    }
 
     /**
      * 子类初始化画笔
@@ -204,16 +197,18 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
         return mPaint;
     }
 
-    public void setPaint(Paint paint) {
+    public T setPaint(Paint paint) {
         this.mPaint = paint;
+        return (T) this;
     }
 
     public boolean isVisible() {
         return mVisible;
     }
 
-    public void setVisible(boolean visible) {
+    public T setVisible(boolean visible) {
         this.mVisible = visible;
+        return (T) this;
     }
 
     public boolean isDestroy() {
@@ -224,7 +219,7 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
         this.mDestroy = destroy;
     }
 
-    float getXInPx() {
+    protected float getXInPx() {
         return ScreenUtil.dp2px(mX);
     }
 
@@ -232,12 +227,22 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
         return mX;
     }
 
-    public void setX(float x) {
+    public T setX(float x) {
         this.mX = x;
         setRect();
+        return (T) this;
     }
 
-    float getYInPx() {
+    /**
+     * 元素中心点x方向移动到坐标
+     */
+    public T setCenterToX(float centerX) {
+        this.mX = centerX - getWidth() / 2;
+        setRect();
+        return (T) this;
+    }
+
+    protected float getYInPx() {
         return ScreenUtil.dp2px(mY);
     }
 
@@ -245,17 +250,28 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
         return mY;
     }
 
-    public void setY(float y) {
+    public T setY(float y) {
         this.mY = y;
         setRect();
+        return (T) this;
+    }
+
+    /**
+     * 元素中心点y方向移动到坐标
+     */
+    public T setCenterToY(float centerY) {
+        this.mX = centerY - getWidth() / 2;
+        setRect();
+        return (T) this;
     }
 
     public float getZ() {
         return mZ;
     }
 
-    public void setZ(float z) {
+    public T setZ(float z) {
         this.mZ = z;
+        return (T) this;
     }
 
     private void setRect() {
@@ -278,50 +294,55 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
      *
      * @param rotate 0~360°为一圈
      */
-    public void setRotate(float rotate) {
+    public T setRotate(float rotate) {
         mRotate = rotate;
+        return (T) this;
     }
 
     public int getWidth() {
         return mWidth;
     }
 
-    int getWidthInPx() {
+    protected int getWidthInPx() {
         return ScreenUtil.dp2px(mWidth);
     }
 
-    public void setWidth(int width) {
+    public T setWidth(int width) {
         this.mWidth = width;
         setRect();
+        return (T) this;
     }
 
     public int getHeight() {
         return mHeight;
     }
 
-    int getHeightInPx() {
+    protected int getHeightInPx() {
         return ScreenUtil.dp2px(mHeight);
     }
 
-    public void setHeight(int height) {
+    public T setHeight(int height) {
         this.mHeight = height;
         setRect();
+        return (T) this;
     }
 
     public int getId() {
         return mId;
     }
 
-    public void setId(int id) {
+    public T setId(int id) {
         this.mId = id;
+        return (T) this;
     }
 
     public Object getTag() {
         return mTag;
     }
 
-    public void setTag(Object tag) {
+    public T setTag(Object tag) {
         this.mTag = tag;
+        return (T) this;
     }
 
     /**
@@ -332,9 +353,9 @@ public abstract class BaseCell implements Comparable<BaseCell>, Cloneable {
     }
 
     @Override
-    public BaseCell clone() {
+    public T clone() {
         try {
-            return (BaseCell) super.clone();
+            return (T) super.clone();
         } catch (Exception e) {
             e.printStackTrace();
         }

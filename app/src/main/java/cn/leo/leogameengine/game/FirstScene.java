@@ -6,10 +6,12 @@ import android.view.MotionEvent;
 import java.util.List;
 
 import cn.leo.engine.LeoEngine;
-import cn.leo.engine.cell.AnimCell;
 import cn.leo.engine.cell.BaseCell;
 import cn.leo.engine.cell.ImageCell;
 import cn.leo.engine.cell.TextCell;
+import cn.leo.engine.cell.animation.AnimCell;
+import cn.leo.engine.cell.animation.AnimClip;
+import cn.leo.engine.cell.animation.AnimFrame;
 import cn.leo.engine.control.CellControl;
 import cn.leo.engine.layer.BaseLayer;
 import cn.leo.engine.listener.CellEventListener;
@@ -57,18 +59,18 @@ public class FirstScene extends BaseScene {
      */
     private void createPlayerAnim(BaseLayer layer) {
         //创建动画片段
-        AnimCell.AnimClip animClip = new AnimCell.AnimClip();
-        animClip.addFrame(new AnimCell.AnimFrame(getContext(), "pic/hero1.png", 100));
-        animClip.addFrame(new AnimCell.AnimFrame(getContext(), "pic/hero2.png", 100));
-        animClip.setLoop(true);
-        AnimCell animCell = new AnimCell();
-        animCell.setAnimClip(animClip, true);
-        //设置元素大小
-        animCell.setWidth(60);
-        animCell.setHeight(80);
+        AnimClip animClip = AnimClip.build()
+                .addFrame(new AnimFrame(this, "pic/hero1.png", 100))
+                .addFrame(new AnimFrame(this, "pic/hero2.png", 100))
+                .setLoop(true);
+        AnimCell animCell = AnimCell.build()
+                .setAnimClip(animClip, true)
+                //设置元素大小
+                .setWidth(60)
+                .setHeight(80);
         //设置元素位置
-        animCell.setX((getWidth() / 2) - (animCell.getWidth() / 2));
-        animCell.setY(getHeight() - animCell.getHeight() * 2);
+        animCell.setX((getWidth() / 2) - (animCell.getWidth() / 2))
+                .setY(getHeight() - animCell.getHeight() * 2);
         //元素添加到帧
         layer.addCell(animCell);
 
@@ -91,12 +93,9 @@ public class FirstScene extends BaseScene {
                         mDy = y - cell.getY();
                         break;
                     case MotionEvent.ACTION_MOVE:
+                    case MotionEvent.ACTION_UP:
                         BaseCell playerCell = player.getCell();
                         playerCell.moveTo(x - mDx, y - mDy);
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        player.setYSpeed(0);
-                        player.setXSpeed(0);
                         break;
                     default:
                         break;
@@ -112,17 +111,18 @@ public class FirstScene extends BaseScene {
      */
     private void createEnemyAnim(BaseLayer layer) {
         //创建动画片段
-        AnimCell.AnimClip animClip = new AnimCell.AnimClip();
-        animClip.addFrame(new AnimCell.AnimFrame(getContext(), "pic/enemy3_n1.png", 200));
-        animClip.addFrame(new AnimCell.AnimFrame(getContext(), "pic/enemy3_n2.png", 200));
-        animClip.setLoop(true);
+        AnimClip animClip = AnimClip.build()
+                .addFrame(new AnimFrame(this, "pic/enemy3_n1.png", 200))
+                .addFrame(new AnimFrame(this, "pic/enemy3_n2.png", 200))
+                .setLoop(true);
         //创建动画单元
-        AnimCell animCell = new AnimCell();
-        animCell.setAnimClip(animClip, true);
-        //设置元素大小
-        animCell.setWidth(120);
-        animCell.setHeight(180);
-        animCell.setX((getWidth() / 2) - (animCell.getWidth() / 2));
+        AnimCell animCell = AnimCell.build()
+                .setAnimClip(animClip, true)
+                .setX(10)
+                .setY(20)
+                .setWidth(120)
+                .setHeight(180)
+                .setCenterToX(getWidth() / 2);
         layer.addCell(animCell);
     }
 
@@ -131,12 +131,12 @@ public class FirstScene extends BaseScene {
      */
     private void createText(BaseLayer layer) {
         TextCell textCell = new TextCell("飞机大战");
-        textCell.setTextAlign(Paint.Align.CENTER);
-        textCell.setTextSize(30);
-        textCell.setX(getWidth() / 2);
-        textCell.setY(getHeight() / 2);
-        textCell.setZ(2000);
-        textCell.setRotate(30);
+        textCell.setTextAlign(Paint.Align.CENTER)
+                .setTextSize(30)
+                .setX(getWidth() / 2)
+                .setY(getHeight() / 2)
+                .setZ(2000)
+                .setRotate(30);
         layer.addCell(textCell);
     }
 
@@ -146,7 +146,7 @@ public class FirstScene extends BaseScene {
     private void createBackGround() {
         //创建背景图层
         BaseLayer backGround = new BaseLayer();
-        final ImageCell bg1 = new ImageCell(getContext(), "pic/background.png");
+        final ImageCell bg1 = new ImageCell(this, "pic/background.png");
         //背景图片宽高比
         float ratio = bg1.getHeight() * 1f / bg1.getWidth();
         //图片按宽高比填充屏幕
@@ -163,16 +163,16 @@ public class FirstScene extends BaseScene {
         getCellControl().addCell("bg2", bg2);
         CellControl.CellProperty bg11 = getCellControl().getCellProperty("bg1").get(0);
         CellControl.CellProperty bg22 = getCellControl().getCellProperty("bg2").get(0);
-        //滚动
+        //向下滚动,速度每秒100dp
         bg11.setYSpeed(100);
         bg22.setYSpeed(100);
         //监听滚动,一张到底后拼接到另一张开头,以做到无限循环
         CellEventListener cellEventListener = new CellEventListener<ImageCell>() {
             @Override
             public void onCellMove(ImageCell cell, float lastX, float newX, float lastY, float newY, float lastRotation, float newRotation) {
-                BaseCell low = bg1.getY() < bg2.getY() ? bg1 : bg2;
+                BaseCell top = bg1.getY() < bg2.getY() ? bg1 : bg2;
                 if (newY > getHeight()) {
-                    cell.setY(low.getY() - cell.getHeight() + 1);
+                    cell.setY(top.getY() - cell.getHeight() + 1);
                 }
             }
         };

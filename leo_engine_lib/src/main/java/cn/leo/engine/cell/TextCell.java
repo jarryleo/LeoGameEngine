@@ -15,7 +15,7 @@ import cn.leo.engine.screen.ScreenUtil;
  * @date : 2018/10/18 15:46
  * 文字元素
  */
-public class TextCell extends BaseCell {
+public class TextCell extends BaseCell<TextCell> {
     /**
      * 要绘制的文字内容
      */
@@ -45,6 +45,10 @@ public class TextCell extends BaseCell {
     public TextCell(String text) {
         this();
         mText = text;
+    }
+
+    public static TextCell build(String text) {
+        return new TextCell(text);
     }
 
     @Override
@@ -87,29 +91,32 @@ public class TextCell extends BaseCell {
         return mText;
     }
 
-    public void setText(String text) {
+    public TextCell setText(String text) {
         mText = text;
         mChanged = true;
+        return this;
     }
 
     public int getTextSize() {
         return mTextSize;
     }
 
-    public void setTextSize(int textSize) {
+    public TextCell setTextSize(int textSize) {
         mTextSize = ScreenUtil.dp2px(textSize);
         getPaint().setTextSize(mTextSize);
         mChanged = true;
+        return this;
     }
 
     public int getTextColor() {
         return mTextColor;
     }
 
-    public void setTextColor(int textColor) {
+    public TextCell setTextColor(int textColor) {
         mTextColor = textColor;
         getPaint().setColor(textColor);
         mChanged = true;
+        return this;
     }
 
     /**
@@ -118,8 +125,9 @@ public class TextCell extends BaseCell {
      * @param align 对齐方式
      */
 
-    public void setTextAlign(Paint.Align align) {
+    public TextCell setTextAlign(Paint.Align align) {
         getPaint().setTextAlign(align);
         mChanged = true;
+        return this;
     }
 }

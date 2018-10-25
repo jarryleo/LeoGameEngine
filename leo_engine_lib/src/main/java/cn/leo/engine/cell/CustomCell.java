@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
  * @author : Jarry Leo
  * @date : 2018/10/18 15:53
  */
-public class CustomCell extends BaseCell {
+public class CustomCell extends BaseCell<CustomCell> {
     @Override
     protected Paint initPaint() {
         return new Paint(Paint.ANTI_ALIAS_FLAG);

@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import cn.leo.engine.cell.AnimCell;
+import cn.leo.engine.cell.animation.AnimCell;
 import cn.leo.engine.cell.BaseCell;
+import cn.leo.engine.cell.animation.AnimClip;
 import cn.leo.engine.listener.CellEventListener;
 import cn.leo.engine.listener.CellOnClickListener;
 import cn.leo.engine.listener.CellOnTouchListener;
@@ -126,7 +127,7 @@ public class CellControl {
             }
         }
 
-        void playAnim(AnimCell.AnimClip animClip) {
+        void playAnim(AnimClip animClip) {
             if (mCell instanceof AnimCell) {
                 AnimCell cell = (AnimCell) mCell;
                 cell.setAnimClip(animClip, true);

@@ -1,6 +1,5 @@
 package cn.leo.engine.cell;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -8,6 +7,7 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 
 import cn.leo.engine.common.AssetsUtil;
+import cn.leo.engine.scene.BaseScene;
 import cn.leo.engine.screen.ScreenUtil;
 
 /**
@@ -15,7 +15,7 @@ import cn.leo.engine.screen.ScreenUtil;
  * @date : 2018/10/18 14:29
  * 图片元素
  */
-public class ImageCell extends BaseCell {
+public class ImageCell extends BaseCell<ImageCell> {
     /**
      * bitmap图像
      */
@@ -25,18 +25,27 @@ public class ImageCell extends BaseCell {
     private Rect mSource;
     private Rect mTarget;
 
+
+    public static ImageCell build(Bitmap bitmap) {
+        return new ImageCell(bitmap);
+    }
+
     public ImageCell(Bitmap bitmap) {
         mBitmap = bitmap;
+    }
+
+    public static ImageCell build(BaseScene baseScene, String assetsPicFileName) {
+        return new ImageCell(baseScene, assetsPicFileName);
     }
 
     /**
      * 从资源文件夹加载图片
      *
-     * @param context           上下文
+     * @param baseScene         场景
      * @param assetsPicFileName 文件名
      */
-    public ImageCell(Context context, String assetsPicFileName) {
-        Bitmap bitmapFromAsset = AssetsUtil.getBitmapFromAsset(context, assetsPicFileName);
+    public ImageCell(BaseScene baseScene, String assetsPicFileName) {
+        Bitmap bitmapFromAsset = AssetsUtil.getBitmapFromAsset(baseScene.getContext(), assetsPicFileName);
         if (bitmapFromAsset == null) {
             throw new IllegalArgumentException("\"" + assetsPicFileName + "\" are not exist in assets folder");
         }
@@ -66,15 +75,48 @@ public class ImageCell extends BaseCell {
     }
 
     @Override
-    public void setWidth(int width) {
+    public ImageCell setWidth(int width) {
         super.setWidth(width);
         mTarget = new Rect(0, 0, getWidthInPx(), getHeightInPx());
+        return this;
     }
 
+
     @Override
-    public void setHeight(int height) {
+    public ImageCell setHeight(int height) {
         super.setHeight(height);
         mTarget = new Rect(0, 0, getWidthInPx(), getHeightInPx());
+        return this;
+    }
+
+    /**
+     * 设置宽度,是否等比设置
+     *
+     * @param width      宽度
+     * @param equalRatio 是否等比
+     */
+    public ImageCell setWidth(int width, boolean equalRatio) {
+        if (equalRatio) {
+            float ratio = getHeightInPx() * 1f / getWidthInPx();
+            setHeight((int) (width * ratio));
+        }
+        setWidth(width);
+        return this;
+    }
+
+    /**
+     * 设置高度,是否等比设置
+     *
+     * @param height     高度
+     * @param equalRatio 是否等比
+     */
+    public ImageCell setHeight(int height, boolean equalRatio) {
+        if (equalRatio) {
+            float ratio = getHeightInPx() * 1f / getWidthInPx();
+            setWidth((int) (height / ratio));
+        }
+        setHeight(height);
+        return this;
     }
 
     @Override
@@ -86,7 +128,7 @@ public class ImageCell extends BaseCell {
         return mBitmap;
     }
 
-    public void setBitmap(Bitmap bitmap) {
+    public ImageCell setBitmap(Bitmap bitmap) {
         mBitmap = bitmap;
         mSource = new Rect(0, 0, mBitmap.getWidth(), mBitmap.getHeight());
         if (getWidth() == 0) {
@@ -95,6 +137,7 @@ public class ImageCell extends BaseCell {
         if (getHeight() == 0) {
             setHeight(ScreenUtil.px2dp(bitmap.getHeight()));
         }
+        return this;
     }
 
 
