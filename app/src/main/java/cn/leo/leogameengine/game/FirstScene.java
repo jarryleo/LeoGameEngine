@@ -60,11 +60,12 @@ public class FirstScene extends BaseScene {
      */
     private void createPlayerAnim(BaseLayer layer) {
         //创建动画片段
-        AnimClip animClip = AnimClip.build()
+        AnimClip animClip = AnimClip.create()
                 .addFrame(new AnimFrame(this, "pic/hero1.png", 100))
                 .addFrame(new AnimFrame(this, "pic/hero2.png", 100))
                 .setLoop(true);
-        AnimCell animCell = AnimCell.build()
+        //创建动画元素
+        AnimCell animCell = AnimCell.create()
                 .setAnimClip(animClip, true)
                 //设置元素大小
                 .setWidth(60)
@@ -72,7 +73,7 @@ public class FirstScene extends BaseScene {
                 //设置元素位置
                 .setCenterToX(getWidth() / 2)
                 .setCenterToY(getHeight() - 120);
-        //元素添加到帧
+        //元素添加到图层
         layer.addCell(animCell);
         //元素添加到控制器,便于其它位置获取飞机元素
         getCellControl().addCell("player", animCell);
@@ -106,7 +107,7 @@ public class FirstScene extends BaseScene {
      */
     private void createBullet(BaseLayer layer) {
         //创建子弹对象
-        final ImageCell bullet = ImageCell.build(this, "pic/bullet1.png")
+        final ImageCell bullet = ImageCell.create(this, "pic/bullet1.png")
                 .setWidth(5, true)
                 .setY(250)
                 .setVisible(false);
@@ -122,7 +123,7 @@ public class FirstScene extends BaseScene {
         }
         //子弹速度
         getCellControl().setYSpeed("bullet", -300);
-        //获取玩家位置,给子弹初始左边
+        //获取玩家位置,给子弹初始坐标
         final CellControl.CellProperty player = getCellControl().getCellProperty("player").get(0);
         //子弹事件监控
         getCellControl().setCellEventListener("bullet", new CellEventListener<ImageCell>() {
@@ -145,12 +146,12 @@ public class FirstScene extends BaseScene {
      */
     private void createEnemyAnim(BaseLayer layer) {
         //创建动画片段
-        AnimClip animClip = AnimClip.build()
+        AnimClip animClip = AnimClip.create()
                 .addFrame(new AnimFrame(this, "pic/enemy3_n1.png", 200))
                 .addFrame(new AnimFrame(this, "pic/enemy3_n2.png", 200))
                 .setLoop(true);
         //创建动画单元
-        AnimCell animCell = AnimCell.build()
+        AnimCell animCell = AnimCell.create()
                 .setAnimClip(animClip, true)
                 .setWidth(120)
                 .setHeight(180)
@@ -172,7 +173,7 @@ public class FirstScene extends BaseScene {
      * 文字
      */
     private void createText(BaseLayer layer) {
-        TextCell textCell = TextCell.build("飞机大战")
+        TextCell textCell = TextCell.create("飞机大战")
                 .setTextAlign(Paint.Align.CENTER)
                 .setTextSize(30)
                 .setX(getWidth() / 2)

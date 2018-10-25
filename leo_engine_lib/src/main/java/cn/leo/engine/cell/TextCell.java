@@ -47,7 +47,7 @@ public class TextCell extends BaseCell<TextCell> {
         mText = text;
     }
 
-    public static TextCell build(String text) {
+    public static TextCell create(String text) {
         return new TextCell(text);
     }
 

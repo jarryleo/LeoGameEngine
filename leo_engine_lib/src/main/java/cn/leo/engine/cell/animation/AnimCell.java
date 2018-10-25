@@ -63,7 +63,7 @@ public class AnimCell extends BaseCell<AnimCell> {
     /**
      * 构造自身
      */
-    public static AnimCell build() {
+    public static AnimCell create() {
         return new AnimCell();
     }
 

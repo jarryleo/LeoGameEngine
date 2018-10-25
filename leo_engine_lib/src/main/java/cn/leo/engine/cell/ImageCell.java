@@ -26,7 +26,7 @@ public class ImageCell extends BaseCell<ImageCell> {
     private Rect mTarget;
 
 
-    public static ImageCell build(Bitmap bitmap) {
+    public static ImageCell create(Bitmap bitmap) {
         return new ImageCell(bitmap);
     }
 
@@ -34,7 +34,7 @@ public class ImageCell extends BaseCell<ImageCell> {
         mBitmap = bitmap;
     }
 
-    public static ImageCell build(BaseScene baseScene, String assetsPicFileName) {
+    public static ImageCell create(BaseScene baseScene, String assetsPicFileName) {
         return new ImageCell(baseScene, assetsPicFileName);
     }
 

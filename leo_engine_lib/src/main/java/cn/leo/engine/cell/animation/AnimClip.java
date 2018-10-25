@@ -29,7 +29,7 @@ public class AnimClip {
      */
     private boolean mFillAfter;
 
-    public static AnimClip build() {
+    public static AnimClip create() {
         return new AnimClip();
     }
 
