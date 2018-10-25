@@ -112,20 +112,27 @@ public class FirstScene extends BaseScene {
     private void createBullet(BaseLayer layer) {
         final ImageCell bullet = ImageCell.build(this, "pic/bullet1.png")
                 .setWidth(5, true)
-                .setY(-50);
+                .setY(250)
+                .setVisible(false);
         layer.addCell(bullet);
         getCellControl().addCell("bullet", bullet);
-        CellControl.CellProperty property = getCellControl().getCellProperty("bullet").get(0);
-        property.setYSpeed(-300);
+        for (int i = 0; i < 10; i++) {
+            ImageCell clone = bullet.clone();
+            clone.setY(250 + i * 100);
+            layer.addCell(clone);
+            getCellControl().addCell("bullet", clone);
+        }
+        getCellControl().setYSpeed("bullet", -300);
         final CellControl.CellProperty player = getCellControl().getCellProperty("player").get(0);
-        property.setCellEventListener(new CellEventListener() {
+        getCellControl().setCellEventListener("bullet", new CellEventListener() {
             @Override
             public void onCellMove(BaseCell cell, float lastX, float newX, float lastY, float newY, float lastRotation, float newRotation) {
-                if (newY < -bullet.getHeight()) {
+                if (newY < -cell.getHeight()) {
                     float x = player.getCell().getX();
                     float y = player.getCell().getY();
-                    bullet.setCenterToX(x + 30)
-                            .setCenterToY(y);
+                    cell.setCenterToX(x + 30)
+                            .setCenterToY(y)
+                            .setVisible(true);
                 }
             }
         });

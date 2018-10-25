@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import cn.leo.engine.cell.animation.AnimCell;
 import cn.leo.engine.cell.BaseCell;
+import cn.leo.engine.cell.animation.AnimCell;
 import cn.leo.engine.cell.animation.AnimClip;
 import cn.leo.engine.listener.CellEventListener;
 import cn.leo.engine.listener.CellOnClickListener;
@@ -148,6 +148,7 @@ public class CellControl {
         properties.add(new CellProperty(cell));
     }
 
+
     public List<CellProperty> getCellProperty(String cellName) {
         return mCellProperties.get(cellName);
     }
@@ -155,17 +156,46 @@ public class CellControl {
     /**
      * 对同一类cell 设置事件监听
      *
-     * @param key               cell关键字
+     * @param cellName          cell关键字
      * @param cellEventListener 事件监听
      */
-    public void setCellEventListener(String key, CellEventListener cellEventListener) {
-        List<CellProperty> cellProperty = getCellProperty(key);
+    public void setCellEventListener(String cellName, CellEventListener cellEventListener) {
+        List<CellProperty> cellProperty = getCellProperty(cellName);
         for (CellProperty property : cellProperty) {
             property.setCellEventListener(cellEventListener);
         }
 
     }
 
+    /**
+     * 统一给元素分组设置速度
+     *
+     * @param cellName 元素名
+     * @param xSpeed   速度
+     */
+    public void setXSpeed(String cellName, float xSpeed) {
+        List<CellProperty> cellProperty = getCellProperty(cellName);
+        for (CellProperty property : cellProperty) {
+            property.setXSpeed(xSpeed);
+        }
+    }
+
+    /**
+     * 统一给元素分组设置速度
+     *
+     * @param cellName 元素名
+     * @param ySpeed   速度
+     */
+    public void setYSpeed(String cellName, float ySpeed) {
+        List<CellProperty> cellProperty = getCellProperty(cellName);
+        for (CellProperty property : cellProperty) {
+            property.setYSpeed(ySpeed);
+        }
+    }
+
+    /**
+     * 帧事件
+     */
     public void onFrame() {
         for (List<CellProperty> properties : mCellProperties.values()) {
             for (CellProperty cellProperty : properties) {

@@ -52,6 +52,10 @@ public abstract class BaseScene {
      * 场景是否初始化
      */
     private boolean mHasInit = false;
+    /**
+     * 场景运行时间
+     */
+    private long mPassTimeMills;
 
     /**
      * 场景构造
@@ -98,7 +102,8 @@ public abstract class BaseScene {
             initScene();
         }
         //场景运行时间
-        onScenePassTime(System.currentTimeMillis() - mStartTime);
+        mPassTimeMills = System.currentTimeMillis() - mStartTime;
+        onScenePassTime(mPassTimeMills);
         showFps(canvas);
     }
 
@@ -125,11 +130,20 @@ public abstract class BaseScene {
      * 画面每执行一帧都会回调此方法
      *
      * @param passTimeMills 场景运行时间
+     * @callsuper
      */
     protected void onScenePassTime(long passTimeMills) {
 
     }
 
+    /**
+     * 获取场景运行时长
+     *
+     * @return 场景运行时长, 毫秒
+     */
+    public long getPassTimeMills() {
+        return mPassTimeMills;
+    }
 
     public Context getContext() {
         return mContext;
