@@ -1,6 +1,7 @@
 package cn.leo.engine.control;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -149,6 +150,9 @@ public class CellControl {
         properties.add(new CellProperty(cell));
     }
 
+    public void removeCell(BaseCell cell) {
+
+    }
 
     public List<CellProperty> getCellProperty(String cellName) {
         return mCellProperties.get(cellName);
@@ -162,6 +166,9 @@ public class CellControl {
      */
     public void setCellEventListener(String cellName, CellEventListener cellEventListener) {
         List<CellProperty> cellProperty = getCellProperty(cellName);
+        if (cellProperty == null) {
+            return;
+        }
         for (CellProperty property : cellProperty) {
             property.setCellEventListener(cellEventListener);
         }
@@ -212,8 +219,15 @@ public class CellControl {
      */
     public void onFrame() {
         for (List<CellProperty> properties : mCellProperties.values()) {
-            for (CellProperty cellProperty : properties) {
-                cellProperty.cellMove();
+            Iterator<CellProperty> iterator = properties.iterator();
+            while (iterator.hasNext()) {
+                CellProperty next = iterator.next();
+                boolean destroy = next.getCell().isDestroy();
+                if (destroy) {
+                    iterator.remove();
+                } else {
+                    next.cellMove();
+                }
             }
         }
     }

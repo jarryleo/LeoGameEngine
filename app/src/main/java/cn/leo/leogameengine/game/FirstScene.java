@@ -11,6 +11,7 @@ import cn.leo.engine.cell.animation.AnimCell;
 import cn.leo.engine.cell.animation.AnimClip;
 import cn.leo.engine.cell.animation.AnimFrame;
 import cn.leo.engine.control.CellControl;
+import cn.leo.engine.control.Scheduler;
 import cn.leo.engine.layer.BaseLayer;
 import cn.leo.engine.listener.CellEventListener;
 import cn.leo.engine.listener.CellOnTouchListener;
@@ -105,33 +106,39 @@ public class FirstScene extends BaseScene {
     /**
      * 子弹
      */
-    private void createBullet(BaseLayer layer) {
-        //创建子弹对象
-        final ImageCell bullet = ImageCell.create(this, "pic/bullet1.png")
-                .setWidth(5, true)
-                .setY(250)
-                .setVisible(false);
-        //交给控制器
-        layer.addCell(bullet);
-        getCellControl().addCell("bullet", bullet);
+    private void createBullet(final BaseLayer layer) {
 
-        //子弹速度
-        getCellControl().setYSpeed("bullet", -300);
         //获取玩家位置,给子弹初始坐标
         final CellControl.CellProperty player = getCellControl().getCellProperty("player").get(0);
-        //子弹事件监控
-        getCellControl().setCellEventListener("bullet", new CellEventListener<ImageCell>() {
+
+        getTimerControl().subscribe(new Scheduler() {
             @Override
-            public void onCellMove(ImageCell cell, float lastX, float newX, float lastY, float newY, float lastRotation, float newRotation) {
-                if (newY < -cell.getHeight()) {
-                    float x = player.getCell().getX();
-                    float y = player.getCell().getY();
-                    cell.setCenterToX(x + 30)
-                            .setCenterToY(y)
-                            .setVisible(true);
-                }
+            public void event() {
+                float x = player.getCell().getX();
+                float y = player.getCell().getY();
+                //创建子弹对象
+                final ImageCell bullet = ImageCell.create(FirstScene.this, "pic/bullet1.png")
+                        .setWidth(5, true)
+                        .setCenterToX(x + 30)
+                        .setCenterToY(y);
+                layer.addCell(bullet);
+                //交给控制器
+                getCellControl().addCell("bullet", bullet);
+                //子弹速度
+                getCellControl().setYSpeed("bullet", -300);
+
+                //子弹事件监控
+                getCellControl().setCellEventListener("bullet", new CellEventListener<ImageCell>() {
+                    @Override
+                    public void onCellMove(ImageCell cell, float lastX, float newX, float lastY, float newY, float lastRotation, float newRotation) {
+                        if (newY < -cell.getHeight()) {
+                            cell.onDestroy();
+                        }
+                    }
+                });
+
             }
-        });
+        }, 200, -1, 1000);
 
     }
 
