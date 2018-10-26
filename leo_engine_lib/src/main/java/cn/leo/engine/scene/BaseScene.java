@@ -10,6 +10,7 @@ import java.util.List;
 
 import cn.leo.engine.LeoEngine;
 import cn.leo.engine.control.CellControl;
+import cn.leo.engine.control.TimerControl;
 import cn.leo.engine.control.TouchControl;
 import cn.leo.engine.control.VoiceControl;
 import cn.leo.engine.layer.BaseLayer;
@@ -40,6 +41,8 @@ public abstract class BaseScene {
     private TouchControl mTouchControl;
     private VoiceControl mVoiceControl;
     private CellControl mCellControl;
+    private TimerControl mTimerControl;
+
     /**
      * 场景开始时间
      */
@@ -67,6 +70,7 @@ public abstract class BaseScene {
         mContext = leoEngine.getContext();
         //初始化默认控制器
         mCellControl = new CellControl();
+        mTimerControl = new TimerControl();
         mTouchControl = new TouchControl(mContext);
         mVoiceControl = new VoiceControl(mContext, 20);
         mStartTime = System.currentTimeMillis();
@@ -93,6 +97,9 @@ public abstract class BaseScene {
         if (mCellControl != null) {
             mCellControl.onFrame();
         }
+        if (mTimerControl != null) {
+            mTimerControl.onFrame();
+        }
         if (mHasInit) {
             for (BaseLayer layer : mLayers) {
                 layer.dispatchDraw(canvas);
@@ -106,6 +113,7 @@ public abstract class BaseScene {
         onScenePassTime(mPassTimeMills);
         showFps(canvas);
     }
+
 
     private Paint mPaint = new Paint();
     private long mLastDrawTime;
@@ -219,6 +227,20 @@ public abstract class BaseScene {
     }
 
     /**
+     * 获取时间控制器
+     */
+    public TimerControl getTimerControl() {
+        return mTimerControl;
+    }
+
+    /**
+     * 设置时间控制器
+     */
+    public void setTimerControl(TimerControl timerControl) {
+        mTimerControl = timerControl;
+    }
+
+    /**
      * 销毁场景,回收资源
      */
     public void onDestroy() {
@@ -234,6 +256,9 @@ public abstract class BaseScene {
         }
         if (getCellControl() != null) {
             getCellControl().onDestroy();
+        }
+        if (getTimerControl() != null) {
+            getTimerControl().onDestroy();
         }
     }
 }

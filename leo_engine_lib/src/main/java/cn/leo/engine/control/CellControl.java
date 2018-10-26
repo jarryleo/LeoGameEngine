@@ -10,6 +10,7 @@ import cn.leo.engine.cell.animation.AnimClip;
 import cn.leo.engine.listener.CellEventListener;
 import cn.leo.engine.listener.CellOnClickListener;
 import cn.leo.engine.listener.CellOnTouchListener;
+import cn.leo.engine.path.BasePath;
 
 /**
  * @author : Jarry Leo
@@ -190,6 +191,19 @@ public class CellControl {
         List<CellProperty> cellProperty = getCellProperty(cellName);
         for (CellProperty property : cellProperty) {
             property.setYSpeed(ySpeed);
+        }
+    }
+
+    /**
+     * 给元素设置路径
+     *
+     * @param cellName 元素名称
+     * @param path     路径
+     */
+    public void setPath(String cellName, BasePath path) {
+        List<CellProperty> cellProperty = getCellProperty(cellName);
+        for (CellProperty property : cellProperty) {
+
         }
     }
 

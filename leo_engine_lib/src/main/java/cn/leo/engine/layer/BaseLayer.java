@@ -31,22 +31,33 @@ public class BaseLayer {
 
     public void addCell(@NonNull BaseCell cell) {
         mCells.add(cell);
-        needReSortZ();
+        requestReSortZ();
     }
 
     public void removeCell(@NonNull BaseCell cell) {
         cell.setDestroy(true);
     }
 
+    /**
+     * 元素高度重排
+     */
     private void reSort() {
         isNeedReSort = false;
         Collections.sort(mCells);
     }
 
-    public void needReSortZ() {
+    /**
+     * 请求元素高度重排
+     */
+    public void requestReSortZ() {
         isNeedReSort = true;
     }
 
+    /**
+     * 给图层内的元素分发绘制事件
+     *
+     * @param canvas 画布
+     */
     public void dispatchDraw(@NonNull Canvas canvas) {
         if (isNeedReSort) {
             reSort();

@@ -59,6 +59,10 @@ public class TimerControl {
         }
     }
 
+    public void onDestroy() {
+        mSchedulers.clear();
+    }
+
     public static class SchedulerInfo {
 
         private static final int REPEAT_FOREVER = -1;

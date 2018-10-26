@@ -227,6 +227,14 @@ public abstract class BaseCell<T extends BaseCell> implements Comparable<BaseCel
         return mX;
     }
 
+    /**
+     * 获取中心点x坐标
+     */
+    public float getCenterX() {
+        return mX + getWidth() / 2;
+    }
+
+
     public T setX(float x) {
         this.mX = x;
         setRect();
@@ -248,6 +256,15 @@ public abstract class BaseCell<T extends BaseCell> implements Comparable<BaseCel
 
     public float getY() {
         return mY;
+    }
+
+    /**
+     * 获取中心点y坐标
+     *
+     * @return
+     */
+    public float getCenterY() {
+        return mY + getHeight() / 2;
     }
 
     public T setY(float y) {
@@ -274,6 +291,17 @@ public abstract class BaseCell<T extends BaseCell> implements Comparable<BaseCel
         return (T) this;
     }
 
+    /**
+     * 高度变化指定值
+     *
+     * @param value 要变化的值
+     * @return
+     */
+    public T zChangeBy(float value) {
+        this.mZ += value;
+        return (T) this;
+    }
+
     private void setRect() {
         mRect.set((int) getX(),
                 (int) getY(),
@@ -296,6 +324,16 @@ public abstract class BaseCell<T extends BaseCell> implements Comparable<BaseCel
      */
     public T setRotate(float rotate) {
         mRotate = rotate;
+        return (T) this;
+    }
+
+    /**
+     * 旋转指定角度
+     *
+     * @param rotate 要旋转的角度
+     */
+    public T rotateBy(float rotate) {
+        mRotate += rotate;
         return (T) this;
     }
 

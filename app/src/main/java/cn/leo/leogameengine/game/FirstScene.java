@@ -114,13 +114,7 @@ public class FirstScene extends BaseScene {
         //交给控制器
         layer.addCell(bullet);
         getCellControl().addCell("bullet", bullet);
-        //克隆10发交给控制器
-        for (int i = 0; i < 10; i++) {
-            ImageCell clone = bullet.clone();
-            clone.setY(250 + i * 100);
-            layer.addCell(clone);
-            getCellControl().addCell("bullet", clone);
-        }
+
         //子弹速度
         getCellControl().setYSpeed("bullet", -300);
         //获取玩家位置,给子弹初始坐标
@@ -156,16 +150,6 @@ public class FirstScene extends BaseScene {
                 .setWidth(120)
                 .setHeight(180)
                 .setCenterToX(getWidth() / 2);
-        //克隆敌机
-       /* Random random = new Random();
-        for (int i = 0; i < 100; i++) {
-            AnimCell clone = animCell.clone();
-            clone.setWidth(30, true)
-                    .setRotate(random.nextInt(360))
-                    .setX(random.nextInt(330))
-                    .setY(random.nextInt(600));
-            layer.addCell(clone);
-        }*/
         layer.addCell(animCell);
     }
 
