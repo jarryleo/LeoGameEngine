@@ -13,7 +13,7 @@ import cn.leo.engine.cell.TextCell;
 import cn.leo.engine.cell.animation.AnimCell;
 import cn.leo.engine.cell.animation.AnimClip;
 import cn.leo.engine.cell.animation.AnimFrame;
-import cn.leo.engine.control.CellControl;
+import cn.leo.engine.control.CellProperty;
 import cn.leo.engine.control.Scheduler;
 import cn.leo.engine.layer.BaseLayer;
 import cn.leo.engine.listener.CellEventListener;
@@ -116,7 +116,7 @@ public class FirstScene extends BaseScene {
     private void createBullet(final BaseLayer layer) {
 
         //获取玩家位置,给子弹初始坐标
-        final CellControl.CellProperty player = getCellControl().getCellProperty("player").get(0);
+        final CellProperty player = getCellControl().getCellProperty("player").get(0);
 
         final CellRecycler<ImageCell> bulletPool = new CellRecycler<ImageCell>() {
             @Override
@@ -130,8 +130,8 @@ public class FirstScene extends BaseScene {
                 return bullet;
             }
         };
-
-        final CellControl.CellProperty enemy = getCellControl().getCellProperty("enemy").get(0);
+        //获取敌机位置
+        final CellProperty enemy = getCellControl().getCellProperty("enemy").get(0);
         getTimerControl().subscribe(new Scheduler() {
             @Override
             public void event() {
@@ -146,7 +146,7 @@ public class FirstScene extends BaseScene {
                 getCellControl().setCellEventListener("bullet", new CellEventListener<ImageCell>() {
                     @Override
                     public void onCellMove(ImageCell cell, float lastX, float newX, float lastY, float newY, float lastRotation, float newRotation) {
-                        if (CollisionDetection.isCollision(enemy.getCell(), cell, 10)) {
+                        if (CollisionDetection.isCollision(enemy.getCell(), cell, 5)) {
                             //击中敌机
                             cell.recycle();
                         }
