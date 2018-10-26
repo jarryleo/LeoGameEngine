@@ -81,6 +81,10 @@ public abstract class BaseCell<T extends BaseCell> implements Comparable<BaseCel
      * 元素标记，附加数据
      */
     private Object mTag;
+    /**
+     * 标记元素是否可回收
+     */
+    private boolean mRecycle;
 
     /**
      * 子类初始化画笔
@@ -383,8 +387,24 @@ public abstract class BaseCell<T extends BaseCell> implements Comparable<BaseCel
         return (T) this;
     }
 
+    public boolean isRecycle() {
+        return mRecycle;
+    }
+
+    public void setRecycle(boolean recycle) {
+        mRecycle = recycle;
+    }
+
     /**
-     * 销毁场景,回收资源
+     * 元素回收
+     */
+    public void recycle() {
+        mRecycle = true;
+        mVisible = false;
+    }
+
+    /**
+     * 销毁元素
      */
     public void onDestroy() {
         setDestroy(true);

@@ -5,6 +5,7 @@ import android.view.MotionEvent;
 
 import cn.leo.engine.LeoEngine;
 import cn.leo.engine.cell.BaseCell;
+import cn.leo.engine.cell.CellRecycler;
 import cn.leo.engine.cell.ImageCell;
 import cn.leo.engine.cell.TextCell;
 import cn.leo.engine.cell.animation.AnimCell;
@@ -111,28 +112,31 @@ public class FirstScene extends BaseScene {
         //获取玩家位置,给子弹初始坐标
         final CellControl.CellProperty player = getCellControl().getCellProperty("player").get(0);
 
+        final CellRecycler<ImageCell> bulletPool = new CellRecycler<ImageCell>() {
+            @Override
+            public ImageCell buildCell() {
+                //创建子弹对象
+                final ImageCell bullet = ImageCell.create(FirstScene.this, "pic/bullet1.png")
+                        .setWidth(5, true);
+                getCellControl().addCell("bullet", bullet);
+                getCellControl().setYSpeed("bullet", -300);
+                layer.addCell(bullet);
+                return bullet;
+            }
+        };
         getTimerControl().subscribe(new Scheduler() {
             @Override
             public void event() {
                 float x = player.getCell().getX();
                 float y = player.getCell().getY();
-                //创建子弹对象
-                final ImageCell bullet = ImageCell.create(FirstScene.this, "pic/bullet1.png")
-                        .setWidth(5, true)
-                        .setCenterToX(x + 30)
-                        .setCenterToY(y);
-                layer.addCell(bullet);
-                //交给控制器
-                getCellControl().addCell("bullet", bullet);
-                //子弹速度
-                getCellControl().setYSpeed("bullet", -300);
-
+                ImageCell cell = bulletPool.getCell();
+                cell.setCenterToX(x + 30).setCenterToY(y);
                 //子弹事件监控
                 getCellControl().setCellEventListener("bullet", new CellEventListener<ImageCell>() {
                     @Override
                     public void onCellMove(ImageCell cell, float lastX, float newX, float lastY, float newY, float lastRotation, float newRotation) {
                         if (newY < -cell.getHeight()) {
-                            cell.onDestroy();
+                            cell.recycle();
                         }
                     }
                 });
