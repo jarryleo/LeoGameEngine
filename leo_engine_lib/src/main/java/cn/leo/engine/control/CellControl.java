@@ -49,7 +49,10 @@ public class CellControl {
         private CellEventListener mCellEventListener;
         private CellOnClickListener mCellOnClickListener;
         private CellOnTouchListener mCellOnTouchListener;
-
+        /**
+         * 元素轨迹
+         */
+        private BasePath mBasePath;
 
         public CellProperty(BaseCell cell) {
             mCell = cell;
@@ -75,7 +78,23 @@ public class CellControl {
             mYSpeed = ySpeed;
         }
 
+        public void setBasePath(BasePath basePath) {
+            basePath.setCell(mCell);
+            mBasePath = basePath;
+        }
+
         void cellMove() {
+            if (mBasePath != null) {
+                boolean moveSuccess = mBasePath.onFrame();
+                if (!moveSuccess && mCellEventListener != null) {
+                    mCellEventListener.onCellMoveFinished(mCell);
+                }
+            } else {
+                generalMove();
+            }
+        }
+
+        private void generalMove() {
             long timeMillis = System.currentTimeMillis();
             float lastX = mCell.getX();
             float lastY = mCell.getY();
@@ -183,6 +202,9 @@ public class CellControl {
      */
     public void setXSpeed(String cellName, float xSpeed) {
         List<CellProperty> cellProperty = getCellProperty(cellName);
+        if (cellProperty == null) {
+            return;
+        }
         for (CellProperty property : cellProperty) {
             property.setXSpeed(xSpeed);
         }
@@ -196,6 +218,9 @@ public class CellControl {
      */
     public void setYSpeed(String cellName, float ySpeed) {
         List<CellProperty> cellProperty = getCellProperty(cellName);
+        if (cellProperty == null) {
+            return;
+        }
         for (CellProperty property : cellProperty) {
             property.setYSpeed(ySpeed);
         }
@@ -209,8 +234,11 @@ public class CellControl {
      */
     public void setPath(String cellName, BasePath path) {
         List<CellProperty> cellProperty = getCellProperty(cellName);
+        if (cellProperty == null) {
+            return;
+        }
         for (CellProperty property : cellProperty) {
-
+            property.setBasePath(path);
         }
     }
 

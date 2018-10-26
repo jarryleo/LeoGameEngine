@@ -1,7 +1,5 @@
 package cn.leo.engine.path;
 
-import cn.leo.engine.cell.BaseCell;
-
 /**
  * @author : Jarry Leo
  * @date : 2018/10/26 9:23
@@ -9,8 +7,4 @@ import cn.leo.engine.cell.BaseCell;
  */
 public class LinearPath extends BasePath {
 
-
-    public LinearPath(BaseCell baseCell) {
-        super(baseCell);
-    }
 }

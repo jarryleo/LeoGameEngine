@@ -42,4 +42,12 @@ public class CellEventListener<T extends BaseCell> {
     public void onCellMove(T cell, float lastX, float newX, float lastY, float newY, float lastRotation, float newRotation) {
 
     }
+
+    /**
+     * 元素移动结束
+     * @param cell 元素
+     */
+    public void onCellMoveFinished(T cell) {
+
+    }
 }

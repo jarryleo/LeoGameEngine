@@ -22,14 +22,14 @@ public class CollisionDetection {
      * @return
      */
     public static boolean isCollision(BaseCell a, BaseCell b, int overlap) {
-        rect1.set((int) a.getX() - overlap,
-                (int) a.getY() - overlap,
-                (int) (a.getX() + a.getWidth() + overlap),
-                (int) (a.getY() + a.getHeight() + overlap));
-        rect2.set((int) b.getX() - overlap,
-                (int) b.getY() - overlap,
-                (int) (b.getX() + b.getWidth() + overlap),
-                (int) (b.getY() + b.getHeight() + overlap));
+        rect1.set((int) a.getX() + overlap,
+                (int) a.getY() + overlap,
+                (int) (a.getX() + a.getWidth() - overlap),
+                (int) (a.getY() + a.getHeight() - overlap));
+        rect2.set((int) b.getX() + overlap,
+                (int) b.getY() + overlap,
+                (int) (b.getX() + b.getWidth() - overlap),
+                (int) (b.getY() + b.getHeight() - overlap));
         return rect1.intersect(rect2);
     }
 }

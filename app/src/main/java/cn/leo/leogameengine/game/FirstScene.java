@@ -3,6 +3,8 @@ package cn.leo.leogameengine.game;
 import android.graphics.Paint;
 import android.view.MotionEvent;
 
+import java.util.Random;
+
 import cn.leo.engine.LeoEngine;
 import cn.leo.engine.cell.BaseCell;
 import cn.leo.engine.cell.CellRecycler;
@@ -16,7 +18,10 @@ import cn.leo.engine.control.Scheduler;
 import cn.leo.engine.layer.BaseLayer;
 import cn.leo.engine.listener.CellEventListener;
 import cn.leo.engine.listener.CellOnTouchListener;
+import cn.leo.engine.path.LinearPath;
+import cn.leo.engine.physics.CollisionDetection;
 import cn.leo.engine.scene.BaseScene;
+import cn.leo.leogameengine.R;
 
 /**
  * @author : Jarry Leo
@@ -53,7 +58,8 @@ public class FirstScene extends BaseScene {
         createBullet(layer);
         //帧添加到场景
         addLayer(layer);
-
+        //加载声音
+        getVoiceControl().loadSounds(R.raw.bullet, R.raw.achievement);
     }
 
 
@@ -124,9 +130,14 @@ public class FirstScene extends BaseScene {
                 return bullet;
             }
         };
+
+        final CellControl.CellProperty enemy = getCellControl().getCellProperty("enemy").get(0);
         getTimerControl().subscribe(new Scheduler() {
             @Override
             public void event() {
+                //播放子弹声音
+                getVoiceControl().pauseSound(R.raw.bullet);
+                //发射子弹
                 float x = player.getCell().getX();
                 float y = player.getCell().getY();
                 ImageCell cell = bulletPool.getCell();
@@ -135,6 +146,10 @@ public class FirstScene extends BaseScene {
                 getCellControl().setCellEventListener("bullet", new CellEventListener<ImageCell>() {
                     @Override
                     public void onCellMove(ImageCell cell, float lastX, float newX, float lastY, float newY, float lastRotation, float newRotation) {
+                        if (CollisionDetection.isCollision(enemy.getCell(), cell, 10)) {
+                            //击中敌机
+                            cell.recycle();
+                        }
                         if (newY < -cell.getHeight()) {
                             cell.recycle();
                         }
@@ -156,12 +171,35 @@ public class FirstScene extends BaseScene {
                 .addFrame(new AnimFrame(this, "pic/enemy3_n2.png", 200))
                 .setLoop(true);
         //创建动画单元
-        AnimCell animCell = AnimCell.create()
+        final AnimCell animCell = AnimCell.create()
                 .setAnimClip(animClip, true)
                 .setWidth(120)
                 .setHeight(180)
                 .setCenterToX(getWidth() / 2);
         layer.addCell(animCell);
+
+        getCellControl().addCell("enemy", animCell);
+        //轨迹移动
+        final Random random = new Random();
+        final LinearPath path = new LinearPath();
+        path.setInterval(5000);
+        path.setTargetY(300);
+        path.setTargetX(random.nextInt(300));
+        getCellControl().setPath("enemy", path);
+        //监控轨迹
+        getCellControl().setCellEventListener("enemy", new CellEventListener() {
+            @Override
+            public void onCellMoveFinished(BaseCell cell) {
+                if (animCell.getY() > 0) {
+                    path.setTargetY(random.nextInt(300));
+                    path.setTargetX(random.nextInt(300));
+                } else {
+                    path.setTargetY(random.nextInt(300));
+                    path.setTargetX(random.nextInt(300));
+                }
+            }
+        });
+
     }
 
     /**
@@ -172,9 +210,7 @@ public class FirstScene extends BaseScene {
                 .setTextAlign(Paint.Align.CENTER)
                 .setTextSize(30)
                 .setX(getWidth() / 2)
-                .setY(getHeight() / 2)
-                .setZ(2000)
-                .setRotate(30);
+                .setZ(2000);
         layer.addCell(textCell);
     }
 

@@ -54,35 +54,56 @@ public abstract class BasePath {
      * 计算插值器
      */
     private CellInterpolator mCellInterpolator;
-
+    /**
+     * 开始移动时间
+     */
     private long mStartTime;
 
-    public BasePath(BaseCell baseCell) {
-        mBaseCell = baseCell;
-        resetStartAttr();
+    /**
+     * 是否移动结束
+     */
+    private boolean mIsMoveFinished;
+
+
+    public BasePath() {
     }
 
     private void resetStartAttr() {
         mStartTime = System.currentTimeMillis();
-        mStartX = mBaseCell.getX();
-        mStartY = mBaseCell.getY();
-        mStartZ = mBaseCell.getZ();
-        mStartRotate = mBaseCell.getRotate();
+        mIsMoveFinished = false;
+        if (mBaseCell != null) {
+            mStartX = mBaseCell.getX();
+            mStartY = mBaseCell.getY();
+            mStartZ = mBaseCell.getZ();
+            mStartRotate = mBaseCell.getRotate();
+        }
+        if (mTargetRotate == 0) {
+            mTargetRotate = mStartRotate;
+        }
     }
 
     /**
      * 实时移动
      */
-    public void onFrame() {
+    public boolean onFrame() {
+        if (mIsMoveFinished) {
+            return true;
+        }
+        //计算移动
         long l = System.currentTimeMillis();
         long passTime = l - mStartTime;
+        //执行完毕
+        if (passTime > mInterval) {
+            mIsMoveFinished = true;
+            return false;
+        }
         //已过时间百分比
         float v = passTime / mInterval;
         //移动百分比
-        float xRange = mTargetX - mStartX;
-        float yRange = mTargetY - mStartY;
-        float zRange = mTargetZ - mStartZ;
-        float rRange = mTargetRotate - mStartRotate;
+        float xRange = (mTargetX - mStartX) * v;
+        float yRange = (mTargetY - mStartY) * v;
+        float zRange = (mTargetZ - mStartZ) * v;
+        float rRange = (mTargetRotate - mStartRotate) * v;
 
         if (mCellInterpolator != null) {
             xRange = mCellInterpolator.getX(xRange);
@@ -90,9 +111,21 @@ public abstract class BasePath {
             zRange = mCellInterpolator.getZ(zRange);
             rRange = mCellInterpolator.getRotate(rRange);
         }
-        mBaseCell.zChangeBy(zRange);
-        mBaseCell.moveBy(xRange, yRange);
-        mBaseCell.rotateBy(rRange);
+        if (mBaseCell != null) {
+            mBaseCell.setZ(mStartZ + zRange);
+            mBaseCell.moveTo(mStartX + xRange, mStartY + yRange);
+            mBaseCell.setRotate(mStartRotate + rRange);
+        }
+        return true;
+    }
+
+    public BaseCell getCell() {
+        return mBaseCell;
+    }
+
+    public void setCell(BaseCell baseCell) {
+        mBaseCell = baseCell;
+        resetStartAttr();
     }
 
     public void setTargetX(float targetX) {
