@@ -7,14 +7,15 @@ import java.util.Random;
 
 import cn.leo.engine.LeoEngine;
 import cn.leo.engine.cell.BaseCell;
-import cn.leo.engine.control.CellRecycler;
 import cn.leo.engine.cell.ImageCell;
 import cn.leo.engine.cell.TextCell;
 import cn.leo.engine.cell.animation.AnimCell;
 import cn.leo.engine.cell.animation.AnimClip;
 import cn.leo.engine.cell.animation.AnimFrame;
 import cn.leo.engine.control.CellProperty;
+import cn.leo.engine.control.CellRecycler;
 import cn.leo.engine.control.Scheduler;
+import cn.leo.engine.control.TimerControl;
 import cn.leo.engine.layer.BaseLayer;
 import cn.leo.engine.listener.CellEventListener;
 import cn.leo.engine.listener.CellOnTouchListener;
@@ -157,7 +158,7 @@ public class FirstScene extends BaseScene {
                 });
 
             }
-        }, 200, -1, 1000);
+        }, 200, TimerControl.REPEAT_FOREVER, 1000);
 
     }
 

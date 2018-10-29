@@ -10,6 +10,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * 向场景订阅事件机制
  */
 public class TimerControl {
+    /**
+     * 事件重复次数无限
+     */
+    public static final int REPEAT_FOREVER = -1;
 
     private ConcurrentHashMap<Scheduler, SchedulerInfo> mSchedulers = new ConcurrentHashMap<>();
 
@@ -63,9 +67,8 @@ public class TimerControl {
         mSchedulers.clear();
     }
 
-    public static class SchedulerInfo {
+    private static class SchedulerInfo {
 
-        private static final int REPEAT_FOREVER = -1;
         /**
          * 订阅的事件
          */
@@ -104,10 +107,10 @@ public class TimerControl {
                         mScheduler.event();
                         //记录上次执行时间
                         lastScheduledTime = timeMillis;
-                    }
-                    if (mRepeat > 0) {
-                        //剩余次数-1
-                        mRepeat--;
+                        if (mRepeat > 0) {
+                            //剩余次数-1
+                            mRepeat--;
+                        }
                     }
                 } else {
                     return false;
