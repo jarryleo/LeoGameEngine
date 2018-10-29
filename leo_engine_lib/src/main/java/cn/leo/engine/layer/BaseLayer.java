@@ -22,10 +22,11 @@ import cn.leo.engine.cell.BaseCell;
  */
 public class BaseLayer {
 
+    private boolean mIsVisible = true;
     /**
      * 元素高度是否需要重新排序
      */
-    private boolean isNeedReSort;
+    private boolean mIsNeedReSort;
 
     private List<BaseCell> mCells = new ArrayList<>();
 
@@ -42,7 +43,7 @@ public class BaseLayer {
      * 元素高度重排
      */
     private void reSort() {
-        isNeedReSort = false;
+        mIsNeedReSort = false;
         Collections.sort(mCells);
     }
 
@@ -50,7 +51,7 @@ public class BaseLayer {
      * 请求元素高度重排
      */
     public void requestReSortZ() {
-        isNeedReSort = true;
+        mIsNeedReSort = true;
     }
 
     /**
@@ -59,7 +60,10 @@ public class BaseLayer {
      * @param canvas 画布
      */
     public void dispatchDraw(@NonNull Canvas canvas) {
-        if (isNeedReSort) {
+        if (!mIsVisible) {
+            return;
+        }
+        if (mIsNeedReSort) {
             reSort();
         }
         ListIterator<BaseCell> iterator = mCells.listIterator();
@@ -71,6 +75,14 @@ public class BaseLayer {
             }
             cell.dispatchDraw(canvas);
         }
+    }
+
+    public boolean isVisible() {
+        return mIsVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        mIsVisible = visible;
     }
 
     /**

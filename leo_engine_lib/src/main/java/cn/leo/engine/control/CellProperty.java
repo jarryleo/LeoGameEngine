@@ -4,8 +4,6 @@ import cn.leo.engine.cell.BaseCell;
 import cn.leo.engine.cell.animation.AnimCell;
 import cn.leo.engine.cell.animation.AnimClip;
 import cn.leo.engine.listener.CellEventListener;
-import cn.leo.engine.listener.CellOnClickListener;
-import cn.leo.engine.listener.CellOnTouchListener;
 import cn.leo.engine.path.BasePath;
 
 /**
@@ -31,8 +29,6 @@ public class CellProperty {
      * 元素回调
      */
     private CellEventListener mCellEventListener;
-    private CellOnClickListener mCellOnClickListener;
-    private CellOnTouchListener mCellOnTouchListener;
     /**
      * 元素轨迹
      */
@@ -69,15 +65,33 @@ public class CellProperty {
 
     void cellMove() {
         if (mBasePath != null) {
-            boolean moveSuccess = mBasePath.onFrame();
-            if (!moveSuccess && mCellEventListener != null) {
-                mCellEventListener.onCellMoveFinished(mCell);
-            }
+            pathMove();
         } else {
             generalMove();
         }
     }
 
+    /**
+     * 轨迹移动
+     */
+    private void pathMove() {
+        float lastX = mCell.getX();
+        float lastY = mCell.getY();
+        float lastRotate = mCell.getRotate();
+        boolean moveSuccess = mBasePath.onFrame();
+        if (!moveSuccess && mCellEventListener != null) {
+            mCellEventListener.onCellMoveFinished(mCell);
+        } else if (moveSuccess) {
+            if (mCellEventListener != null) {
+                mCellEventListener.onCellMove(mCell, lastX, mCell.getX(),
+                        lastY, mCell.getY(), lastRotate, mCell.getRotate());
+            }
+        }
+    }
+
+    /**
+     * 常规移动
+     */
     private void generalMove() {
         long timeMillis = System.currentTimeMillis();
         float lastX = mCell.getX();
@@ -98,14 +112,6 @@ public class CellProperty {
 
     public void setCellEventListener(CellEventListener cellEventListener) {
         mCellEventListener = cellEventListener;
-    }
-
-    public void setCellOnClickListener(CellOnClickListener cellOnClickListener) {
-        mCellOnClickListener = cellOnClickListener;
-    }
-
-    public void setCellOnTouchListener(CellOnTouchListener cellOnTouchListener) {
-        mCellOnTouchListener = cellOnTouchListener;
     }
 
     void hideCell() {

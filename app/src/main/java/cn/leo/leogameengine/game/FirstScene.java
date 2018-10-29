@@ -7,7 +7,7 @@ import java.util.Random;
 
 import cn.leo.engine.LeoEngine;
 import cn.leo.engine.cell.BaseCell;
-import cn.leo.engine.cell.CellRecycler;
+import cn.leo.engine.control.CellRecycler;
 import cn.leo.engine.cell.ImageCell;
 import cn.leo.engine.cell.TextCell;
 import cn.leo.engine.cell.animation.AnimCell;
