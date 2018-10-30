@@ -180,6 +180,7 @@ public class FirstScene extends Scene {
         final LinearPath path = new LinearPath();
         path.setInterval(5000);
         path.setTargetY(300);
+        path.setTargetRotate(360);
         path.setTargetX(random.nextInt(300));
         setCellPath("enemy", path);
         //监控轨迹
@@ -188,6 +189,7 @@ public class FirstScene extends Scene {
             public void onCellMoveFinished(BaseCell cell) {
                 path.setTargetY(random.nextInt(300));
                 path.setTargetX(random.nextInt(300));
+                path.setTargetRotate(random.nextInt(360));
             }
         });
 
