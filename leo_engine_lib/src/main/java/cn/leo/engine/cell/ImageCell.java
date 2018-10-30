@@ -7,7 +7,7 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 
 import cn.leo.engine.common.AssetsUtil;
-import cn.leo.engine.scene.BaseScene;
+import cn.leo.engine.scene.Scene;
 import cn.leo.engine.screen.ScreenUtil;
 
 /**
@@ -34,18 +34,18 @@ public class ImageCell extends BaseCell<ImageCell> {
         mBitmap = bitmap;
     }
 
-    public static ImageCell create(BaseScene baseScene, String assetsPicFileName) {
-        return new ImageCell(baseScene, assetsPicFileName);
+    public static ImageCell create(Scene scene, String assetsPicFileName) {
+        return new ImageCell(scene, assetsPicFileName);
     }
 
     /**
      * 从资源文件夹加载图片
      *
-     * @param baseScene         场景
+     * @param scene         场景
      * @param assetsPicFileName 文件名
      */
-    public ImageCell(BaseScene baseScene, String assetsPicFileName) {
-        Bitmap bitmapFromAsset = AssetsUtil.getBitmapFromAsset(baseScene.getContext(), assetsPicFileName);
+    public ImageCell(Scene scene, String assetsPicFileName) {
+        Bitmap bitmapFromAsset = AssetsUtil.getBitmapFromAsset(scene.getContext(), assetsPicFileName);
         if (bitmapFromAsset == null) {
             throw new IllegalArgumentException("\"" + assetsPicFileName + "\" are not exist in assets folder");
         }

@@ -6,7 +6,7 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
 import cn.leo.engine.common.AssetsUtil;
-import cn.leo.engine.scene.BaseScene;
+import cn.leo.engine.scene.Scene;
 
 /**
  * @author : Jarry Leo
@@ -34,8 +34,8 @@ public class AnimFrame {
         mDuration = duration;
     }
 
-    public AnimFrame(BaseScene baseScene, @NonNull String bitmapFile, @IntRange(from = 1) int duration) {
-        this(baseScene.getContext(), bitmapFile, duration);
+    public AnimFrame(Scene scene, @NonNull String bitmapFile, @IntRange(from = 1) int duration) {
+        this(scene.getContext(), bitmapFile, duration);
     }
 
     public Bitmap getBitmap() {

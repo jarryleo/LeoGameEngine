@@ -148,4 +148,14 @@ public class CellProperty {
             }
         }
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof CellProperty) {
+            CellProperty cellProperty = (CellProperty) obj;
+            return cellProperty.getCell().equals(getCell());
+        } else {
+            return false;
+        }
+    }
 }

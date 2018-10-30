@@ -1,8 +1,11 @@
 package cn.leo.engine.cell.animation;
 
 import android.graphics.Bitmap;
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.util.SparseArray;
+
+import cn.leo.engine.scene.Scene;
 
 /**
  * @author : Jarry Leo
@@ -28,12 +31,17 @@ public class AnimClip {
      * 播放完是否保持最后一张画面
      */
     private boolean mFillAfter;
+    /**
+     * 场景
+     */
+    private final Scene mScene;
 
-    public static AnimClip create() {
-        return new AnimClip();
+    public static AnimClip create(Scene scene) {
+        return new AnimClip(scene);
     }
 
-    public AnimClip() {
+    public AnimClip(Scene scene) {
+        mScene = scene;
     }
 
     /**
@@ -43,6 +51,20 @@ public class AnimClip {
      * @return 本对象
      */
     public AnimClip addFrame(@NonNull AnimFrame frame) {
+        mFrames.append(mTotalTime, frame);
+        mTotalTime += frame.getDuration();
+        return this;
+    }
+
+    /**
+     * 添加帧
+     *
+     * @param bitmapFile 图片路径
+     * @param duration   帧延时
+     * @return 本对象
+     */
+    public AnimClip addFrame(@NonNull String bitmapFile, @IntRange(from = 1) int duration) {
+        AnimFrame frame = new AnimFrame(mScene, bitmapFile, duration);
         mFrames.append(mTotalTime, frame);
         mTotalTime += frame.getDuration();
         return this;

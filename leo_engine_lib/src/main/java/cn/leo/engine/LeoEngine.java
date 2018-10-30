@@ -17,8 +17,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
 
-import cn.leo.engine.control.TouchControl;
-import cn.leo.engine.scene.BaseScene;
+import cn.leo.engine.control.TouchControlImpl;
+import cn.leo.engine.scene.Scene;
 import cn.leo.engine.screen.ScreenAdapter;
 import cn.leo.engine.screen.ScreenUtil;
 
@@ -46,7 +46,7 @@ public class LeoEngine extends SurfaceView {
     /**
      * 引擎执行场景
      */
-    private BaseScene mScene;
+    private Scene mScene;
     /**
      * 引擎线程
      */
@@ -126,7 +126,7 @@ public class LeoEngine extends SurfaceView {
      *
      * @param scene 场景
      */
-    public void loadScene(BaseScene scene) {
+    public void loadScene(Scene scene) {
         if (mScene != null) {
             mScene.onDestroy();
         }
@@ -204,7 +204,7 @@ public class LeoEngine extends SurfaceView {
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        TouchControl touchControl = mScene.getTouchControl();
+        TouchControlImpl touchControl = mScene.getTouchControl();
         if (touchControl != null) {
             touchControl.onTouchEvent(event);
         }

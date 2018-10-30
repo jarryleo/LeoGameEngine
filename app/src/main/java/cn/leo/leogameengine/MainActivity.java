@@ -1,7 +1,6 @@
 package cn.leo.leogameengine;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 
 import cn.leo.engine.LeoEngine;
@@ -25,6 +24,6 @@ public class MainActivity extends AppCompatActivity {
         //创建场景
         FirstScene firstScene = new FirstScene(mGameEngine);
         //开场
-        firstScene.start();
+        mGameEngine.loadScene(firstScene);
     }
 }

@@ -1,9 +1,6 @@
 package cn.leo.engine.control;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 import cn.leo.engine.cell.BaseCell;
 import cn.leo.engine.listener.CellEventListener;
@@ -11,42 +8,25 @@ import cn.leo.engine.path.BasePath;
 
 /**
  * @author : Jarry Leo
- * @date : 2018/10/22 10:54
- * <p>
- * 元素行为控制器
- * <p>
- * NPC 自主移动,场景事件等
+ * @date : 2018/10/30 10:10
  */
-
-public class CellControl {
-
-    private ConcurrentHashMap<String, List<CellProperty>> mCellProperties = new ConcurrentHashMap<>();
-
+public interface CellControl extends ControlLife {
     /**
-     * 元素属性包装,并交给控制器统一管理
+     * 添加元素到元素控制器
      *
      * @param cellName 元素名称
      * @param cell     元素对象
-     * @return 包装后的元素
+     * @return 元素属性包装类
      */
-    public CellProperty addCell(String cellName, BaseCell cell) {
-        List<CellProperty> properties = mCellProperties.get(cellName);
-        if (properties == null) {
-            properties = new ArrayList<>();
-            mCellProperties.put(cellName, properties);
-        }
-        CellProperty property = new CellProperty(cell);
-        properties.add(property);
-        return property;
-    }
+    CellProperty addCellToControl(String cellName, BaseCell cell);
 
-    public void removeCell(BaseCell cell) {
-
-    }
-
-    public List<CellProperty> getCellProperty(String cellName) {
-        return mCellProperties.get(cellName);
-    }
+    /**
+     * 从元素控制器移除元素
+     *
+     * @param cellName 元素名称
+     * @param cell     元素对象
+     */
+    void removeCellFromControl(String cellName, BaseCell cell);
 
     /**
      * 对同一类cell 设置事件监听
@@ -54,16 +34,7 @@ public class CellControl {
      * @param cellName          cell关键字
      * @param cellEventListener 事件监听
      */
-    public void setCellEventListener(String cellName, CellEventListener cellEventListener) {
-        List<CellProperty> cellProperty = getCellProperty(cellName);
-        if (cellProperty == null) {
-            return;
-        }
-        for (CellProperty property : cellProperty) {
-            property.setCellEventListener(cellEventListener);
-        }
-
-    }
+    void setCellEventListener(String cellName, CellEventListener cellEventListener);
 
     /**
      * 统一给元素分组设置速度
@@ -71,15 +42,7 @@ public class CellControl {
      * @param cellName 元素名
      * @param xSpeed   速度
      */
-    public void setXSpeed(String cellName, float xSpeed) {
-        List<CellProperty> cellProperty = getCellProperty(cellName);
-        if (cellProperty == null) {
-            return;
-        }
-        for (CellProperty property : cellProperty) {
-            property.setXSpeed(xSpeed);
-        }
-    }
+    void setCellXSpeed(String cellName, float xSpeed);
 
     /**
      * 统一给元素分组设置速度
@@ -87,15 +50,7 @@ public class CellControl {
      * @param cellName 元素名
      * @param ySpeed   速度
      */
-    public void setYSpeed(String cellName, float ySpeed) {
-        List<CellProperty> cellProperty = getCellProperty(cellName);
-        if (cellProperty == null) {
-            return;
-        }
-        for (CellProperty property : cellProperty) {
-            property.setYSpeed(ySpeed);
-        }
-    }
+    void setCellYSpeed(String cellName, float ySpeed);
 
     /**
      * 给元素设置路径
@@ -103,39 +58,12 @@ public class CellControl {
      * @param cellName 元素名称
      * @param path     路径
      */
-    public void setPath(String cellName, BasePath path) {
-        List<CellProperty> cellProperty = getCellProperty(cellName);
-        if (cellProperty == null) {
-            return;
-        }
-        for (CellProperty property : cellProperty) {
-            property.setBasePath(path);
-        }
-    }
-
+    void setCellPath(String cellName, BasePath path);
     /**
-     * 帧事件
+     * 根据关键字获取元素包装属性集合
+     *
+     * @param cellName 元素名称
+     * @return 元素包装属性集合
      */
-    public void onFrame() {
-        for (List<CellProperty> properties : mCellProperties.values()) {
-            Iterator<CellProperty> iterator = properties.iterator();
-            while (iterator.hasNext()) {
-                CellProperty next = iterator.next();
-                boolean destroy = next.getCell().isDestroy();
-                if (destroy) {
-                    iterator.remove();
-                } else {
-                    next.cellMove();
-                }
-            }
-        }
-    }
-
-    /**
-     * 销毁场景,回收资源
-     */
-    public void onDestroy() {
-        mCellProperties.clear();
-    }
-
+    List<CellProperty> getCellProperty(String cellName);
 }
