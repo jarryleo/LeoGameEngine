@@ -8,9 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Build;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Message;
+import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -27,7 +25,7 @@ import cn.leo.engine.screen.ScreenUtil;
  * @date : 2018/10/18 13:33
  */
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-public class LeoEngine extends SurfaceView {
+public class LeoEngine extends SurfaceView implements Runnable {
 
     private SurfaceHolder mHolder;
     private Context mContext;
@@ -47,22 +45,6 @@ public class LeoEngine extends SurfaceView {
      * 引擎执行场景
      */
     private Scene mScene;
-    /**
-     * 引擎线程
-     */
-    private HandlerThread mHandlerThread1 = new HandlerThread("LeoEngineThread1");
-    private Handler mHandler1;
-
-    {
-        mHandlerThread1.start();
-        mHandler1 = new Handler(mHandlerThread1.getLooper()) {
-            @Override
-            public void handleMessage(Message msg) {
-                drawStep();
-                loop();
-            }
-        };
-    }
 
     public LeoEngine(Context context) {
         this(context, null);
@@ -89,8 +71,9 @@ public class LeoEngine extends SurfaceView {
         mHolder.addCallback(mCallBack);
         //屏幕适配
         ScreenAdapter.adaptScreen((Activity) mContext, 0);
-        //引擎持续工作
-        loop();
+        //创建引擎线程
+        Thread engineThread = new Thread(this, "EngineThread");
+        engineThread.start();
     }
 
 
@@ -102,7 +85,6 @@ public class LeoEngine extends SurfaceView {
         public void surfaceCreated(SurfaceHolder holder) {
             //窗口可见
             mGameWindowIsVisible = true;
-            loop();
         }
 
         @Override
@@ -141,7 +123,15 @@ public class LeoEngine extends SurfaceView {
      */
     private void loop() {
         if (mGameWindowIsVisible) {
-            mHandler1.obtainMessage().sendToTarget();
+            drawStep();
+        }
+    }
+
+    @Override
+    public void run() {
+        for (; ; ) {
+            SystemClock.sleep(10);
+            loop();
         }
     }
 
@@ -235,5 +225,6 @@ public class LeoEngine extends SurfaceView {
         ((Activity) mContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         return this;
     }
+
 
 }
