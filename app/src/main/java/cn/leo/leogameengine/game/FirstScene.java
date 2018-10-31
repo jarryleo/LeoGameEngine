@@ -15,7 +15,7 @@ import cn.leo.engine.control.CellProperty;
 import cn.leo.engine.control.CellRecycler;
 import cn.leo.engine.control.Scheduler;
 import cn.leo.engine.control.TimerControl;
-import cn.leo.engine.layer.BaseLayer;
+import cn.leo.engine.layer.Layer;
 import cn.leo.engine.listener.CellEventListener;
 import cn.leo.engine.listener.CellOnTouchListener;
 import cn.leo.engine.path.LinearPath;
@@ -47,11 +47,12 @@ public class FirstScene extends Scene {
         //创建背景图层
         createBackGround();
         //创建角色图层
-        BaseLayer layer = new BaseLayer();
+        Layer layer = new Layer();
         //添加文字
         createText(layer);
         //添加敌机动画
         createEnemyAnim(layer);
+        createEnemySmall(layer);
         //添加玩家动画
         createPlayerAnim(layer);
         //添加子弹
@@ -62,11 +63,16 @@ public class FirstScene extends Scene {
         loadSounds(R.raw.bullet);
     }
 
+    private void createEnemySmall(Layer layer) {
+        ImageCell cell = ImageCell.create(this, "pic/enemy2.png");
+        cell.setRotate(180);
+        layer.addCell(cell);
+    }
 
     /**
      * 玩家动画
      */
-    private void createPlayerAnim(BaseLayer layer) {
+    private void createPlayerAnim(Layer layer) {
         //创建动画元素
         AnimCell animCell = AnimCell.create()
                 .setAnimClip(AnimClip.create(this)
@@ -111,7 +117,7 @@ public class FirstScene extends Scene {
     /**
      * 子弹
      */
-    private void createBullet(final BaseLayer layer) {
+    private void createBullet(final Layer layer) {
 
         //获取玩家位置,给子弹初始坐标
         final CellProperty player = getCellProperty("player").get(0);
@@ -134,7 +140,7 @@ public class FirstScene extends Scene {
             @Override
             public void event() {
                 //播放子弹声音
-                //playSound(R.raw.bullet, false);
+                playSound(R.raw.bullet, false);
                 //发射子弹
                 float x = player.getCell().getX();
                 float y = player.getCell().getY();
@@ -162,7 +168,7 @@ public class FirstScene extends Scene {
     /**
      * 敌人动画
      */
-    private void createEnemyAnim(BaseLayer layer) {
+    private void createEnemyAnim(Layer layer) {
         //创建动画单元
         final AnimCell animCell = AnimCell.create()
                 .setAnimClip(AnimClip.create(this)
@@ -180,8 +186,8 @@ public class FirstScene extends Scene {
         final LinearPath path = new LinearPath();
         path.setInterval(5000);
         path.setTargetY(300);
-        path.setTargetRotate(360);
         path.setTargetX(random.nextInt(300));
+        path.setTargetRotate(360);
         setCellPath("enemy", path);
         //监控轨迹
         setCellEventListener("enemy", new CellEventListener() {
@@ -198,11 +204,12 @@ public class FirstScene extends Scene {
     /**
      * 文字
      */
-    private void createText(BaseLayer layer) {
+    private void createText(Layer layer) {
         layer.addCell(TextCell.create("飞机大战")
                 .setTextAlign(Paint.Align.CENTER)
                 .setTextSize(30)
                 .setX(getWidth() / 2)
+                .setRotate(-90)
                 .setZ(2000));
     }
 
@@ -211,8 +218,8 @@ public class FirstScene extends Scene {
      */
     private void createBackGround() {
         //创建背景图层
-        BaseLayer backGround = new BaseLayer();
-        final ImageCell bg1 = new ImageCell(this, "pic/background.png");
+        Layer backGround = new Layer();
+        final ImageCell bg1 = ImageCell.create(this, "pic/background.png");
         //图片按宽高比填充屏幕
         bg1.setWidth(getWidth(), true);
         backGround.addCell(bg1);

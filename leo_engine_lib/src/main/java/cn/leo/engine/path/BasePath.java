@@ -1,7 +1,7 @@
 package cn.leo.engine.path;
 
 import cn.leo.engine.cell.BaseCell;
-import cn.leo.engine.common.SystemClock;
+import cn.leo.engine.common.SystemTime;
 
 /**
  * @author : Jarry Leo
@@ -70,7 +70,7 @@ public abstract class BasePath {
     }
 
     private void resetStartAttr() {
-        mStartTime = SystemClock.now();
+        mStartTime = SystemTime.now();
         mIsMoveFinished = false;
         if (mBaseCell != null) {
             mStartX = mBaseCell.getX();
@@ -91,7 +91,7 @@ public abstract class BasePath {
             return true;
         }
         //计算移动
-        long l = SystemClock.now();
+        long l = SystemTime.now();
         long passTime = l - mStartTime;
         //执行完毕
         if (passTime > mInterval) {

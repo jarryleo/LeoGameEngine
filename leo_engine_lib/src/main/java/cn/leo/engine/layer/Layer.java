@@ -20,7 +20,7 @@ import cn.leo.engine.cell.BaseCell;
  * 每个图层包含多个元素,可以是图片元素,动画元素,文字元素
  * 最表层图层覆盖底层图层;
  */
-public class BaseLayer {
+public class Layer {
 
     private boolean mIsVisible = true;
     /**

@@ -3,7 +3,6 @@ package cn.leo.engine.cell;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.support.annotation.NonNull;
 
 import cn.leo.engine.common.AssetsUtil;
@@ -21,16 +20,11 @@ public class ImageCell extends BaseCell<ImageCell> {
      */
     private Bitmap mBitmap;
 
-
-    private Rect mSource;
-    private Rect mTarget;
-
-
     public static ImageCell create(Bitmap bitmap) {
         return new ImageCell(bitmap);
     }
 
-    public ImageCell(Bitmap bitmap) {
+    private ImageCell(Bitmap bitmap) {
         mBitmap = bitmap;
     }
 
@@ -41,10 +35,10 @@ public class ImageCell extends BaseCell<ImageCell> {
     /**
      * 从资源文件夹加载图片
      *
-     * @param scene         场景
+     * @param scene             场景
      * @param assetsPicFileName 文件名
      */
-    public ImageCell(Scene scene, String assetsPicFileName) {
+    private ImageCell(Scene scene, String assetsPicFileName) {
         Bitmap bitmapFromAsset = AssetsUtil.getBitmapFromAsset(scene.getContext(), assetsPicFileName);
         if (bitmapFromAsset == null) {
             throw new IllegalArgumentException("\"" + assetsPicFileName + "\" are not exist in assets folder");
@@ -62,22 +56,13 @@ public class ImageCell extends BaseCell<ImageCell> {
         if (mBitmap == null) {
             return;
         }
-        canvas.save();
-        if (getWidth() == 0 || getHeight() == 0) {
-            canvas.rotate(getRotate(), getXInPx() + getWidthInPx() / 2, getYInPx() + getHeightInPx() / 2);
-            canvas.drawBitmap(mBitmap, getXInPx(), getYInPx(), getPaint());
-        } else {
-            canvas.translate(getXInPx(), getYInPx());
-            canvas.rotate(getRotate());
-            canvas.drawBitmap(mBitmap, mSource, mTarget, getPaint());
-        }
-        canvas.restore();
+        canvas.drawBitmap(mBitmap, 0, 0, getPaint());
     }
 
     @Override
     public ImageCell setWidth(int width) {
         super.setWidth(width);
-        mTarget = new Rect(0, 0, getWidthInPx(), getHeightInPx());
+        setScaleX(getWidthInPx() * 1f / mBitmap.getWidth());
         return this;
     }
 
@@ -85,7 +70,7 @@ public class ImageCell extends BaseCell<ImageCell> {
     @Override
     public ImageCell setHeight(int height) {
         super.setHeight(height);
-        mTarget = new Rect(0, 0, getWidthInPx(), getHeightInPx());
+        setScaleY(getHeightInPx() * 1f / mBitmap.getHeight());
         return this;
     }
 
@@ -130,7 +115,6 @@ public class ImageCell extends BaseCell<ImageCell> {
 
     public ImageCell setBitmap(Bitmap bitmap) {
         mBitmap = bitmap;
-        mSource = new Rect(0, 0, mBitmap.getWidth(), mBitmap.getHeight());
         if (getWidth() == 0) {
             setWidth(ScreenUtil.px2dp(bitmap.getWidth()));
         }

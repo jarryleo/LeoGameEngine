@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import cn.leo.engine.common.SystemClock;
+import cn.leo.engine.common.SystemTime;
 
 /**
  * @author : Jarry Leo
@@ -100,7 +100,7 @@ public class TimerControlImpl implements TimerControl {
 
 
         private boolean schedule() {
-            long timeMillis = SystemClock.now();
+            long timeMillis = SystemTime.now();
             //已达到延迟时间
             if (timeMillis - mSubscribeTime > mDelay) {
                 //执行次数
@@ -125,7 +125,7 @@ public class TimerControlImpl implements TimerControl {
 
         private SchedulerInfo(Scheduler scheduler, long interval, long repeat, long delay) {
             mScheduler = scheduler;
-            mSubscribeTime = SystemClock.now();
+            mSubscribeTime = SystemTime.now();
             mInterval = interval;
             mRepeat = repeat;
             mDelay = delay;

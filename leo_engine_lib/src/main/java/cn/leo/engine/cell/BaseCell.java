@@ -70,6 +70,14 @@ public abstract class BaseCell<T extends BaseCell> implements Comparable<BaseCel
      */
     private float mRotate;
     /**
+     * X方向缩放比例
+     */
+    private float mScaleX = 1f;
+    /**
+     * Y方向缩放比例
+     */
+    private float mScaleY = 1f;
+    /**
      * 元素区域
      */
     private Rect mRect = new Rect();
@@ -108,8 +116,25 @@ public abstract class BaseCell<T extends BaseCell> implements Comparable<BaseCel
 
     public void dispatchDraw(@NonNull Canvas canvas) {
         if (isVisible() && !isDestroy()) {
+            canvas.save();
+            translate(canvas);
+            rotate(canvas);
+            scale(canvas);
             draw(canvas);
+            canvas.restore();
         }
+    }
+
+    protected void translate(@NonNull Canvas canvas) {
+        canvas.translate(getXInPx(), getYInPx());
+    }
+
+    protected void scale(@NonNull Canvas canvas) {
+        canvas.scale(mScaleX, mScaleY);
+    }
+
+    protected void rotate(@NonNull Canvas canvas) {
+        canvas.rotate(getRotate(),  getWidthInPx() / 2,getHeightInPx() / 2);
     }
 
     /**
@@ -367,6 +392,22 @@ public abstract class BaseCell<T extends BaseCell> implements Comparable<BaseCel
         this.mHeight = height;
         setRect();
         return (T) this;
+    }
+
+    public float getScaleX() {
+        return mScaleX;
+    }
+
+    public void setScaleX(float scaleX) {
+        mScaleX = scaleX;
+    }
+
+    public float getScaleY() {
+        return mScaleY;
+    }
+
+    public void setScaleY(float scaleY) {
+        mScaleY = scaleY;
     }
 
     public int getId() {

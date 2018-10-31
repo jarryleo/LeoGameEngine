@@ -3,6 +3,7 @@ package cn.leo.engine.cell;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -32,19 +33,9 @@ public class TextCell extends BaseCell<TextCell> {
      * 文字绘制对象
      */
     private StaticLayout mLayout;
-    /**
-     * 属性是否变化,不变化绘制相同对象,防止每次绘制都创建对象,造成大量垃圾
-     */
-    private boolean mChanged = true;
 
-    public TextCell() {
-        //设置默认文本显示区域宽度为360dp
-        setWidth(360);
-    }
-
-    public TextCell(String text) {
-        this();
-        mText = text;
+    private TextCell(String text) {
+        setText(text);
     }
 
     public static TextCell create(String text) {
@@ -64,22 +55,25 @@ public class TextCell extends BaseCell<TextCell> {
 
     @Override
     public void draw(@NonNull Canvas canvas) {
-        if (mChanged || mLayout == null) {
-            mChanged = false;
-            mLayout = new StaticLayout(
-                    mText,
-                    (TextPaint) getPaint(),
-                    getWidthInPx(),
-                    Layout.Alignment.ALIGN_NORMAL,
-                    1.0F,
-                    0.0F,
-                    true);
-        }
-        canvas.save();
-        canvas.translate(getXInPx(), getYInPx());
-        canvas.rotate(getRotate());
         mLayout.draw(canvas);
-        canvas.restore();
+    }
+
+    /**
+     * 创建文本绘制对象
+     */
+    private void createLayout() {
+        Rect bounds = new Rect();
+        getPaint().getTextBounds(mText, 0, mText.length(), bounds);
+        int width = bounds.width();
+        setWidth(ScreenUtil.px2dp(width + 10));
+        mLayout = new StaticLayout(
+                mText,
+                (TextPaint) getPaint(),
+                getWidthInPx(),
+                Layout.Alignment.ALIGN_NORMAL,
+                1.0F,
+                0.0F,
+                true);
     }
 
     @Override
@@ -93,7 +87,7 @@ public class TextCell extends BaseCell<TextCell> {
 
     public TextCell setText(String text) {
         mText = text;
-        mChanged = true;
+        createLayout();
         return this;
     }
 
@@ -104,7 +98,7 @@ public class TextCell extends BaseCell<TextCell> {
     public TextCell setTextSize(int textSize) {
         mTextSize = ScreenUtil.dp2px(textSize);
         getPaint().setTextSize(mTextSize);
-        mChanged = true;
+        createLayout();
         return this;
     }
 
@@ -115,7 +109,7 @@ public class TextCell extends BaseCell<TextCell> {
     public TextCell setTextColor(int textColor) {
         mTextColor = textColor;
         getPaint().setColor(textColor);
-        mChanged = true;
+        createLayout();
         return this;
     }
 
@@ -127,7 +121,7 @@ public class TextCell extends BaseCell<TextCell> {
 
     public TextCell setTextAlign(Paint.Align align) {
         getPaint().setTextAlign(align);
-        mChanged = true;
+        createLayout();
         return this;
     }
 }

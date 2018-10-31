@@ -3,11 +3,10 @@ package cn.leo.engine.cell.animation;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.support.annotation.NonNull;
 
 import cn.leo.engine.cell.BaseCell;
-import cn.leo.engine.common.SystemClock;
+import cn.leo.engine.common.SystemTime;
 import cn.leo.engine.screen.ScreenUtil;
 
 /**
@@ -58,8 +57,7 @@ public class AnimCell extends BaseCell<AnimCell> {
     /**
      * 缩放矩形
      */
-    private Rect mSource;
-    private Rect mTarget;
+    private Bitmap mAnimBitmap;
 
     /**
      * 构造自身
@@ -83,14 +81,15 @@ public class AnimCell extends BaseCell<AnimCell> {
     @Override
     public AnimCell setWidth(int width) {
         super.setWidth(width);
-        mTarget = new Rect(0, 0, getWidthInPx(), getHeightInPx());
+        setScaleX(getWidthInPx() * 1f / mAnimBitmap.getWidth());
         return this;
     }
+
 
     @Override
     public AnimCell setHeight(int height) {
         super.setHeight(height);
-        mTarget = new Rect(0, 0, getWidthInPx(), getHeightInPx());
+        setScaleY(getHeightInPx() * 1f / mAnimBitmap.getHeight());
         return this;
     }
 
@@ -135,25 +134,32 @@ public class AnimCell extends BaseCell<AnimCell> {
         if (mAnimClip == null) {
             return;
         }
-        Bitmap animBitmap;
-        if (mStartTime == 0) {
-            //没有开始播放显示第一帧
-            animBitmap = mAnimClip.getFrameBitmapFromTime(0);
-        } else {
-            //画面暂停,保持动画不变
-            if (mIsPause) {
-                mStartTime = SystemClock.now() - mPausePassedTime;
-            }
-            //开始播放
-            animBitmap = mAnimClip.getFrameBitmapFromTime(SystemClock.now() - mStartTime);
-        }
         //播放结束并且不重复,动画元素隐藏
-        if (animBitmap == null) {
+        if (mAnimBitmap == null) {
             setVisible(false);
             return;
         }
-        canvas.save();
-        canvas.rotate(getRotate(), getXInPx() + getWidthInPx() / 2, getYInPx() + getHeightInPx() / 2);
+
+        canvas.drawBitmap(mAnimBitmap, 0, 0, getPaint());
+    }
+
+    @Override
+    protected void translate(@NonNull Canvas canvas) {
+        //没有动画片段退出
+        if (mAnimClip == null) {
+            return;
+        }
+        if (mStartTime == 0) {
+            //没有开始播放显示第一帧
+            mAnimBitmap = mAnimClip.getFrameBitmapFromTime(0);
+        } else {
+            //画面暂停,保持动画不变
+            if (mIsPause) {
+                mStartTime = SystemTime.now() - mPausePassedTime;
+            }
+            //开始播放
+            mAnimBitmap = mAnimClip.getFrameBitmapFromTime(SystemTime.now() - mStartTime);
+        }
         //绘制当前动画帧图片,并且以不同的固定角作为锚点
         switch (mAnchorCorner) {
             case CORNER_TOP_LEFT:
@@ -162,24 +168,22 @@ public class AnimCell extends BaseCell<AnimCell> {
             case CORNER_TOP_RIGHT:
                 canvas.translate(getXInPx() +
                         (mAnimClip.getFrame(0).getBitmap().getWidth()
-                                - animBitmap.getWidth()), getYInPx());
+                                - mAnimBitmap.getWidth()), getYInPx());
                 break;
             case CORNER_BOTTOM_LEFT:
                 canvas.translate(getXInPx(),
                         getYInPx() + (mAnimClip.getFrame(0).getBitmap().getHeight()
-                                - animBitmap.getHeight()));
+                                - mAnimBitmap.getHeight()));
                 break;
             case CORNER_BOTTOM_RIGHT:
                 canvas.translate(getXInPx()
-                                + (mAnimClip.getFrame(0).getBitmap().getWidth() - animBitmap.getWidth()),
+                                + (mAnimClip.getFrame(0).getBitmap().getWidth() - mAnimBitmap.getWidth()),
                         getYInPx()
-                                + (mAnimClip.getFrame(0).getBitmap().getHeight() - animBitmap.getHeight()));
+                                + (mAnimClip.getFrame(0).getBitmap().getHeight() - mAnimBitmap.getHeight()));
                 break;
             default:
                 break;
         }
-        canvas.drawBitmap(animBitmap, mSource, mTarget, getPaint());
-        canvas.restore();
     }
 
     @Override
@@ -191,7 +195,7 @@ public class AnimCell extends BaseCell<AnimCell> {
      * 开始动画
      */
     public void start() {
-        mStartTime = SystemClock.now();
+        mStartTime = SystemTime.now();
     }
 
     /**
@@ -199,7 +203,7 @@ public class AnimCell extends BaseCell<AnimCell> {
      */
     public void pause() {
         mIsPause = true;
-        mPausePassedTime = SystemClock.now() - mStartTime;
+        mPausePassedTime = SystemTime.now() - mStartTime;
     }
 
     /**
@@ -251,14 +255,13 @@ public class AnimCell extends BaseCell<AnimCell> {
      */
     public AnimCell setAnimClip(AnimClip animClip) {
         mAnimClip = animClip;
-        Bitmap bitmap = mAnimClip.getFrame(0).getBitmap();
+        mAnimBitmap = mAnimClip.getFrame(0).getBitmap();
         if (getWidth() == 0) {
-            setWidth(ScreenUtil.px2dp(bitmap.getWidth()));
+            setWidth(ScreenUtil.px2dp(mAnimBitmap.getWidth()));
         }
         if (getHeight() == 0) {
-            setHeight(ScreenUtil.px2dp(bitmap.getHeight()));
+            setHeight(ScreenUtil.px2dp(mAnimBitmap.getHeight()));
         }
-        mSource = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         mStartTime = 0;
         return this;
     }

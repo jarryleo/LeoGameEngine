@@ -10,7 +10,7 @@ import java.util.List;
 
 import cn.leo.engine.LeoEngine;
 import cn.leo.engine.cell.BaseCell;
-import cn.leo.engine.common.SystemClock;
+import cn.leo.engine.common.SystemTime;
 import cn.leo.engine.control.CellControl;
 import cn.leo.engine.control.CellControlImpl;
 import cn.leo.engine.control.CellProperty;
@@ -21,7 +21,7 @@ import cn.leo.engine.control.TouchControl;
 import cn.leo.engine.control.TouchControlImpl;
 import cn.leo.engine.control.VoiceControl;
 import cn.leo.engine.control.VoiceControlImpl;
-import cn.leo.engine.layer.BaseLayer;
+import cn.leo.engine.layer.Layer;
 import cn.leo.engine.listener.CellEventListener;
 import cn.leo.engine.listener.CellOnClickListener;
 import cn.leo.engine.listener.CellOnTouchListener;
@@ -63,7 +63,7 @@ public abstract class Scene implements CellControl, TimerControl, TouchControl, 
     /**
      * 图层集合
      */
-    private List<BaseLayer> mLayers = new ArrayList<>();
+    private List<Layer> mLayers = new ArrayList<>();
     /**
      * 场景运行时间
      */
@@ -86,14 +86,14 @@ public abstract class Scene implements CellControl, TimerControl, TouchControl, 
         mTimerControl = new TimerControlImpl();
         mTouchControl = new TouchControlImpl(mContext);
         mVoiceControl = new VoiceControlImpl(mContext);
-        mStartTime = SystemClock.now();
+        mStartTime = SystemTime.now();
     }
 
-    public void addLayer(BaseLayer layer) {
+    public void addLayer(Layer layer) {
         mLayers.add(layer);
     }
 
-    public void removeLayer(BaseLayer layer) {
+    public void removeLayer(Layer layer) {
         mLayers.remove(layer);
     }
 
@@ -110,6 +110,7 @@ public abstract class Scene implements CellControl, TimerControl, TouchControl, 
      * @hide
      */
     public void dispatchDraw(@NonNull Canvas canvas) {
+        SystemTime.setTime();
         onFrame();
         if (mCellControl != null) {
             mCellControl.onFrame();
@@ -118,7 +119,7 @@ public abstract class Scene implements CellControl, TimerControl, TouchControl, 
             mTimerControl.onFrame();
         }
         if (mHasInit) {
-            for (BaseLayer layer : mLayers) {
+            for (Layer layer : mLayers) {
                 layer.dispatchDraw(canvas);
             }
         } else {
@@ -126,7 +127,7 @@ public abstract class Scene implements CellControl, TimerControl, TouchControl, 
             initScene();
         }
         //场景运行时间
-        mPassTimeMills = SystemClock.now() - mStartTime;
+        mPassTimeMills = SystemTime.now() - mStartTime;
         mFPS.showFps(canvas);
     }
 
@@ -160,13 +161,13 @@ public abstract class Scene implements CellControl, TimerControl, TouchControl, 
          * Debug时候显示FPS
          */
         private void showFps(@NonNull Canvas canvas) {
-            long l = SystemClock.now() - mLastDrawTime;
-            if (SystemClock.now() - mLastShowFps > 1000) {
+            long l = SystemTime.now() - mLastDrawTime;
+            if (SystemTime.now() - mLastShowFps > 1000) {
                 mFps = (int) (1000 / l);
-                mLastShowFps = SystemClock.now();
+                mLastShowFps = SystemTime.now();
             }
             canvas.drawText("FPS:" + mFps, 10, 20, mPaint);
-            mLastDrawTime = SystemClock.now();
+            mLastDrawTime = SystemTime.now();
         }
     }
 
@@ -204,7 +205,7 @@ public abstract class Scene implements CellControl, TimerControl, TouchControl, 
      */
     @Override
     public void onDestroy() {
-        for (BaseLayer layer : mLayers) {
+        for (Layer layer : mLayers) {
             layer.onDestroy();
         }
         clearLayer();
