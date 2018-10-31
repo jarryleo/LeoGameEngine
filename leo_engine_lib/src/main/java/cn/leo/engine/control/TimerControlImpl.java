@@ -4,16 +4,15 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import cn.leo.engine.common.SystemClock;
+
 /**
  * @author : Jarry Leo
  * @date : 2018/10/25 17:56
  * 向场景订阅事件机制
  */
 public class TimerControlImpl implements TimerControl {
-    /**
-     * 事件重复次数无限
-     */
-    public static final int REPEAT_FOREVER = -1;
+
 
     private ConcurrentHashMap<Scheduler, SchedulerInfo> mSchedulers = new ConcurrentHashMap<>();
 
@@ -101,7 +100,7 @@ public class TimerControlImpl implements TimerControl {
 
 
         private boolean schedule() {
-            long timeMillis = System.currentTimeMillis();
+            long timeMillis = SystemClock.now();
             //已达到延迟时间
             if (timeMillis - mSubscribeTime > mDelay) {
                 //执行次数
@@ -126,7 +125,7 @@ public class TimerControlImpl implements TimerControl {
 
         private SchedulerInfo(Scheduler scheduler, long interval, long repeat, long delay) {
             mScheduler = scheduler;
-            mSubscribeTime = System.currentTimeMillis();
+            mSubscribeTime = SystemClock.now();
             mInterval = interval;
             mRepeat = repeat;
             mDelay = delay;

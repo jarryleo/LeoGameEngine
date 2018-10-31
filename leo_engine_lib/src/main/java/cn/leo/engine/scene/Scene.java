@@ -10,6 +10,7 @@ import java.util.List;
 
 import cn.leo.engine.LeoEngine;
 import cn.leo.engine.cell.BaseCell;
+import cn.leo.engine.common.SystemClock;
 import cn.leo.engine.control.CellControl;
 import cn.leo.engine.control.CellControlImpl;
 import cn.leo.engine.control.CellProperty;
@@ -85,7 +86,7 @@ public abstract class Scene implements CellControl, TimerControl, TouchControl, 
         mTimerControl = new TimerControlImpl();
         mTouchControl = new TouchControlImpl(mContext);
         mVoiceControl = new VoiceControlImpl(mContext);
-        mStartTime = System.currentTimeMillis();
+        mStartTime = SystemClock.now();
     }
 
     public void addLayer(BaseLayer layer) {
@@ -125,7 +126,7 @@ public abstract class Scene implements CellControl, TimerControl, TouchControl, 
             initScene();
         }
         //场景运行时间
-        mPassTimeMills = System.currentTimeMillis() - mStartTime;
+        mPassTimeMills = SystemClock.now() - mStartTime;
         mFPS.showFps(canvas);
     }
 
@@ -159,13 +160,13 @@ public abstract class Scene implements CellControl, TimerControl, TouchControl, 
          * Debug时候显示FPS
          */
         private void showFps(@NonNull Canvas canvas) {
-            long l = System.currentTimeMillis() - mLastDrawTime;
-            if (System.currentTimeMillis() - mLastShowFps > 1000) {
+            long l = SystemClock.now() - mLastDrawTime;
+            if (SystemClock.now() - mLastShowFps > 1000) {
                 mFps = (int) (1000 / l);
-                mLastShowFps = System.currentTimeMillis();
+                mLastShowFps = SystemClock.now();
             }
             canvas.drawText("FPS:" + mFps, 10, 20, mPaint);
-            mLastDrawTime = System.currentTimeMillis();
+            mLastDrawTime = SystemClock.now();
         }
     }
 

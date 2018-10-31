@@ -23,6 +23,7 @@ import cn.leo.engine.screen.ScreenUtil;
 /**
  * @author : Jarry Leo
  * @date : 2018/10/18 13:33
+ * 游戏引擎主view同时也是引擎工作引擎
  */
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class LeoEngine extends SurfaceView implements Runnable {
@@ -73,6 +74,7 @@ public class LeoEngine extends SurfaceView implements Runnable {
         ScreenAdapter.adaptScreen((Activity) mContext, 0);
         //创建引擎线程
         Thread engineThread = new Thread(this, "EngineThread");
+        engineThread.setDaemon(true);
         engineThread.start();
     }
 

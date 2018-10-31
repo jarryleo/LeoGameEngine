@@ -14,7 +14,7 @@ import cn.leo.engine.cell.animation.AnimClip;
 import cn.leo.engine.control.CellProperty;
 import cn.leo.engine.control.CellRecycler;
 import cn.leo.engine.control.Scheduler;
-import cn.leo.engine.control.TimerControlImpl;
+import cn.leo.engine.control.TimerControl;
 import cn.leo.engine.layer.BaseLayer;
 import cn.leo.engine.listener.CellEventListener;
 import cn.leo.engine.listener.CellOnTouchListener;
@@ -134,7 +134,7 @@ public class FirstScene extends Scene {
             @Override
             public void event() {
                 //播放子弹声音
-                playSound(R.raw.bullet, false);
+                //playSound(R.raw.bullet, false);
                 //发射子弹
                 float x = player.getCell().getX();
                 float y = player.getCell().getY();
@@ -155,7 +155,7 @@ public class FirstScene extends Scene {
                 });
 
             }
-        }, 200, TimerControlImpl.REPEAT_FOREVER, 1000);
+        }, 200, TimerControl.REPEAT_FOREVER, 1000);
 
     }
 

@@ -3,6 +3,7 @@ package cn.leo.engine.control;
 import cn.leo.engine.cell.BaseCell;
 import cn.leo.engine.cell.animation.AnimCell;
 import cn.leo.engine.cell.animation.AnimClip;
+import cn.leo.engine.common.SystemClock;
 import cn.leo.engine.listener.CellEventListener;
 import cn.leo.engine.path.BasePath;
 
@@ -93,7 +94,7 @@ public class CellProperty {
      * 常规移动
      */
     private void generalMove() {
-        long timeMillis = System.currentTimeMillis();
+        long timeMillis = SystemClock.now();
         float lastX = mCell.getX();
         float lastY = mCell.getY();
         float lastRotate = mCell.getRotate();

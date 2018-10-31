@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 
 import cn.leo.engine.cell.BaseCell;
+import cn.leo.engine.common.SystemClock;
 import cn.leo.engine.screen.ScreenUtil;
 
 /**
@@ -141,10 +142,10 @@ public class AnimCell extends BaseCell<AnimCell> {
         } else {
             //画面暂停,保持动画不变
             if (mIsPause) {
-                mStartTime = System.currentTimeMillis() - mPausePassedTime;
+                mStartTime = SystemClock.now() - mPausePassedTime;
             }
             //开始播放
-            animBitmap = mAnimClip.getFrameBitmapFromTime(System.currentTimeMillis() - mStartTime);
+            animBitmap = mAnimClip.getFrameBitmapFromTime(SystemClock.now() - mStartTime);
         }
         //播放结束并且不重复,动画元素隐藏
         if (animBitmap == null) {
@@ -190,7 +191,7 @@ public class AnimCell extends BaseCell<AnimCell> {
      * 开始动画
      */
     public void start() {
-        mStartTime = System.currentTimeMillis();
+        mStartTime = SystemClock.now();
     }
 
     /**
@@ -198,7 +199,7 @@ public class AnimCell extends BaseCell<AnimCell> {
      */
     public void pause() {
         mIsPause = true;
-        mPausePassedTime = System.currentTimeMillis() - mStartTime;
+        mPausePassedTime = SystemClock.now() - mStartTime;
     }
 
     /**

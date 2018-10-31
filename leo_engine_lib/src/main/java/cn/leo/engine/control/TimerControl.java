@@ -6,6 +6,11 @@ package cn.leo.engine.control;
  */
 public interface TimerControl extends ControlLife {
     /**
+     * 事件重复次数无限
+     */
+    int REPEAT_FOREVER = -1;
+
+    /**
      * 订阅事件
      *
      * @param scheduler 触发执行的事件
