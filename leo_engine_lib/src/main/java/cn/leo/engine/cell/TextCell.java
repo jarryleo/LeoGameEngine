@@ -62,10 +62,12 @@ public class TextCell extends BaseCell<TextCell> {
      * 创建文本绘制对象
      */
     private void createLayout() {
-        Rect bounds = new Rect();
-        getPaint().getTextBounds(mText, 0, mText.length(), bounds);
-        int width = bounds.width();
-        setWidth(ScreenUtil.px2dp(width + 10));
+        if (getWidth() == 0) {
+            Rect bounds = new Rect();
+            getPaint().getTextBounds(mText, 0, mText.length(), bounds);
+            setWidth(ScreenUtil.px2dp(bounds.width() + 10));
+            setHeight(ScreenUtil.px2dp(bounds.height() + 10));
+        }
         mLayout = new StaticLayout(
                 mText,
                 (TextPaint) getPaint(),
@@ -124,4 +126,19 @@ public class TextCell extends BaseCell<TextCell> {
         createLayout();
         return this;
     }
+
+    @Override
+    public TextCell setWidth(int width) {
+        super.setWidth(width);
+        createLayout();
+        return this;
+    }
+
+    @Override
+    public TextCell setHeight(int height) {
+        super.setHeight(height);
+        createLayout();
+        return this;
+    }
 }
+

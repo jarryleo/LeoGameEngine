@@ -1,6 +1,5 @@
 package cn.leo.leogameengine.game;
 
-import android.graphics.Paint;
 import android.view.MotionEvent;
 
 import java.util.Random;
@@ -65,7 +64,7 @@ public class FirstScene extends Scene {
 
     private void createEnemySmall(Layer layer) {
         ImageCell cell = ImageCell.create(this, "pic/enemy2.png");
-        cell.setRotate(180);
+        cell.setRotate(180).setMirrorX(true);
         layer.addCell(cell);
     }
 
@@ -177,6 +176,7 @@ public class FirstScene extends Scene {
                         .setLoop(true), true)
                 .setWidth(120)
                 .setHeight(180)
+                .setMirrorX(true)
                 .setCenterToX(getWidth() / 2);
         layer.addCell(animCell);
 
@@ -206,10 +206,10 @@ public class FirstScene extends Scene {
      */
     private void createText(Layer layer) {
         layer.addCell(TextCell.create("飞机大战")
-                .setTextAlign(Paint.Align.CENTER)
                 .setTextSize(30)
-                .setX(getWidth() / 2)
-                .setRotate(-90)
+                .setWidth(160)
+                .setCenterToX(getWidth() / 2)
+                .setSkewX(-0.5f)
                 .setZ(2000));
     }
 

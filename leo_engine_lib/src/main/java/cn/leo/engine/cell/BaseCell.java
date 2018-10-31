@@ -78,6 +78,23 @@ public abstract class BaseCell<T extends BaseCell> implements Comparable<BaseCel
      */
     private float mScaleY = 1f;
     /**
+     * x方向翻转
+     */
+    private boolean mMirrorX = false;
+    /**
+     * y方向翻转
+     */
+    private boolean mMirrorY = false;
+    /**
+     * x方向倾斜
+     */
+    private float mSkewX;
+    /**
+     * y方向倾斜
+     */
+    private float mSkewY;
+
+    /**
      * 元素区域
      */
     private Rect mRect = new Rect();
@@ -118,6 +135,8 @@ public abstract class BaseCell<T extends BaseCell> implements Comparable<BaseCel
         if (isVisible() && !isDestroy()) {
             canvas.save();
             translate(canvas);
+            mirror(canvas);
+            skew(canvas);
             rotate(canvas);
             scale(canvas);
             draw(canvas);
@@ -125,16 +144,44 @@ public abstract class BaseCell<T extends BaseCell> implements Comparable<BaseCel
         }
     }
 
+    /**
+     * 元素平移
+     */
     protected void translate(@NonNull Canvas canvas) {
         canvas.translate(getXInPx(), getYInPx());
     }
 
+    /**
+     * 元素缩放
+     */
     protected void scale(@NonNull Canvas canvas) {
         canvas.scale(mScaleX, mScaleY);
     }
 
+    /**
+     * 元素旋转
+     */
     protected void rotate(@NonNull Canvas canvas) {
-        canvas.rotate(getRotate(),  getWidthInPx() / 2,getHeightInPx() / 2);
+        canvas.rotate(getRotate(), getWidthInPx() / 2, getHeightInPx() / 2);
+    }
+
+    /**
+     * 元素镜像
+     */
+    protected void mirror(@NonNull Canvas canvas) {
+        if (mMirrorX) {
+            canvas.scale(-1, 1, getWidthInPx() / 2, getHeightInPx() / 2);
+        }
+        if (mMirrorY) {
+            canvas.scale(1, -1, getWidthInPx() / 2, getHeightInPx() / 2);
+        }
+    }
+
+    /**
+     * 元素倾斜
+     */
+    protected void skew(@NonNull Canvas canvas) {
+        canvas.skew(mSkewX, mSkewY);
     }
 
     /**
@@ -398,16 +445,54 @@ public abstract class BaseCell<T extends BaseCell> implements Comparable<BaseCel
         return mScaleX;
     }
 
-    public void setScaleX(float scaleX) {
+    public T setScaleX(float scaleX) {
         mScaleX = scaleX;
+        return (T) this;
     }
 
     public float getScaleY() {
         return mScaleY;
     }
 
-    public void setScaleY(float scaleY) {
+    public T setScaleY(float scaleY) {
         mScaleY = scaleY;
+        return (T) this;
+    }
+
+    public boolean isMirrorX() {
+        return mMirrorX;
+    }
+
+    public T setMirrorX(boolean mirrorX) {
+        mMirrorX = mirrorX;
+        return (T) this;
+    }
+
+    public boolean isMirrorY() {
+        return mMirrorY;
+    }
+
+    public T setMirrorY(boolean mirrorY) {
+        mMirrorY = mirrorY;
+        return (T) this;
+    }
+
+    public float getSkewX() {
+        return mSkewX;
+    }
+
+    public T setSkewX(float skewX) {
+        this.mSkewX = skewX;
+        return (T) this;
+    }
+
+    public float getSkewY() {
+        return mSkewY;
+    }
+
+    public T setSkewY(float skewY) {
+        this.mSkewY = skewY;
+        return (T) this;
     }
 
     public int getId() {
