@@ -1,5 +1,6 @@
 package cn.leo.leogameengine.game;
 
+import android.graphics.Paint;
 import android.view.MotionEvent;
 
 import java.util.Random;
@@ -150,6 +151,7 @@ public class FirstScene extends Scene {
             }
         });
 
+
         //创建敌机爆炸动画
         final AnimClip boom = AnimClip.create(this)
                 .addFrame("pic/enemy3_down1.png", 200)
@@ -170,7 +172,7 @@ public class FirstScene extends Scene {
                 ImageCell cell = bulletPool.getCell();
                 cell.setCenterToX(x + 30).setCenterToY(y);
                 //子弹事件监控
-                setCellEventListener("bullet", new OnCellStateChangeListener<ImageCell>() {
+                setCellStateChangeListener("bullet", new OnCellStateChangeListener<ImageCell>() {
                     @Override
                     public void onCellMove(ImageCell cell, float lastX, float newX, float lastY, float newY, float lastRotation, float newRotation) {
                         if (CollisionDetection.isCollision(enemy.getCell(), cell, 5)) {
@@ -221,7 +223,7 @@ public class FirstScene extends Scene {
         path.setTargetRotate(360);
         setCellPath("enemy", path);
         //监控轨迹
-        setCellEventListener("enemy", new OnCellStateChangeListener() {
+        setCellStateChangeListener("enemy", new OnCellStateChangeListener() {
             @Override
             public void onCellMoveFinished(BaseCell cell) {
                 path.setTargetY(random.nextInt(300));
@@ -237,9 +239,10 @@ public class FirstScene extends Scene {
      */
     private void createText(Layer layer) {
         layer.addCell(TextCell.create("飞机大战")
+                .setTextAlign(Paint.Align.CENTER)
                 .setTextSize(30)
                 .setWidth(160)
-                .setCenterToX(getWidth() / 2)
+                .setX(getWidth() / 2)
                 .setSkewX(-0.5f)
                 .setZ(2000));
     }
@@ -265,7 +268,7 @@ public class FirstScene extends Scene {
         //向下滚动,速度每秒100dp
         setCellYSpeed("bg", 100);
         //监听滚动,一张到底后拼接到另一张开头,以做到无限循环
-        setCellEventListener("bg", new OnCellStateChangeListener<ImageCell>() {
+        setCellStateChangeListener("bg", new OnCellStateChangeListener<ImageCell>() {
             @Override
             public void onCellMove(ImageCell cell, float lastX, float newX, float lastY, float newY, float lastRotation, float newRotation) {
                 BaseCell top = bg1.getY() < bg2.getY() ? bg1 : bg2;

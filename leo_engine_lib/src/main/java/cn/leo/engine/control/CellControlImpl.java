@@ -72,7 +72,7 @@ public class CellControlImpl implements CellControl {
      * @param cellStateChangeListener 事件监听
      */
     @Override
-    public void setCellEventListener(String cellName, OnCellStateChangeListener cellStateChangeListener) {
+    public void setCellStateChangeListener(String cellName, OnCellStateChangeListener cellStateChangeListener) {
         List<CellProperty> cellProperty = getCellProperty(cellName);
         if (cellProperty == null) {
             return;

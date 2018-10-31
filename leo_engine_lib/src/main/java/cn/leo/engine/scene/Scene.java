@@ -231,8 +231,8 @@ public abstract class Scene implements CellControl, TimerControl, TouchControl, 
     }
 
     @Override
-    public void setCellEventListener(String cellName, OnCellStateChangeListener cellStateChangeListener) {
-        mCellControl.setCellEventListener(cellName, cellStateChangeListener);
+    public void setCellStateChangeListener(String cellName, OnCellStateChangeListener cellStateChangeListener) {
+        mCellControl.setCellStateChangeListener(cellName, cellStateChangeListener);
     }
 
     @Override

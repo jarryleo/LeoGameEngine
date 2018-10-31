@@ -34,7 +34,7 @@ public interface CellControl extends ControlLife {
      * @param cellName                cell关键字
      * @param cellStateChangeListener 事件监听
      */
-    void setCellEventListener(String cellName, OnCellStateChangeListener cellStateChangeListener);
+    void setCellStateChangeListener(String cellName, OnCellStateChangeListener cellStateChangeListener);
 
     /**
      * 统一给元素分组设置速度
