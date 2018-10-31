@@ -16,12 +16,15 @@ public class CollisionDetection {
     /**
      * 碰撞检测，传入2个单元
      *
-     * @param a
-     * @param b
+     * @param a       元素a
+     * @param b       元素b
      * @param overlap 允许重叠部分，修正误差 dp
-     * @return
+     * @return 是否碰撞
      */
     public static boolean isCollision(BaseCell a, BaseCell b, int overlap) {
+        if (!a.isVisible() || !b.isVisible()) {
+            return false;
+        }
         rect1.set((int) a.getX() + overlap,
                 (int) a.getY() + overlap,
                 (int) (a.getX() + a.getWidth() - overlap),

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import cn.leo.engine.cell.BaseCell;
-import cn.leo.engine.listener.CellEventListener;
+import cn.leo.engine.listener.OnCellStateChangeListener;
 import cn.leo.engine.path.BasePath;
 
 /**
@@ -68,17 +68,17 @@ public class CellControlImpl implements CellControl {
     /**
      * 对同一类cell 设置事件监听
      *
-     * @param cellName          cell关键字
-     * @param cellEventListener 事件监听
+     * @param cellName                cell关键字
+     * @param cellStateChangeListener 事件监听
      */
     @Override
-    public void setCellEventListener(String cellName, CellEventListener cellEventListener) {
+    public void setCellEventListener(String cellName, OnCellStateChangeListener cellStateChangeListener) {
         List<CellProperty> cellProperty = getCellProperty(cellName);
         if (cellProperty == null) {
             return;
         }
         for (CellProperty property : cellProperty) {
-            property.setCellEventListener(cellEventListener);
+            property.setCellStateChangeListener(cellStateChangeListener);
         }
 
     }

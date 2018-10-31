@@ -3,7 +3,7 @@ package cn.leo.engine.control;
 import java.util.List;
 
 import cn.leo.engine.cell.BaseCell;
-import cn.leo.engine.listener.CellEventListener;
+import cn.leo.engine.listener.OnCellStateChangeListener;
 import cn.leo.engine.path.BasePath;
 
 /**
@@ -31,10 +31,10 @@ public interface CellControl extends ControlLife {
     /**
      * 对同一类cell 设置事件监听
      *
-     * @param cellName          cell关键字
-     * @param cellEventListener 事件监听
+     * @param cellName                cell关键字
+     * @param cellStateChangeListener 事件监听
      */
-    void setCellEventListener(String cellName, CellEventListener cellEventListener);
+    void setCellEventListener(String cellName, OnCellStateChangeListener cellStateChangeListener);
 
     /**
      * 统一给元素分组设置速度
@@ -59,6 +59,7 @@ public interface CellControl extends ControlLife {
      * @param path     路径
      */
     void setCellPath(String cellName, BasePath path);
+
     /**
      * 根据关键字获取元素包装属性集合
      *

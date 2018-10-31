@@ -15,8 +15,10 @@ import cn.leo.engine.control.CellRecycler;
 import cn.leo.engine.control.Scheduler;
 import cn.leo.engine.control.TimerControl;
 import cn.leo.engine.layer.Layer;
-import cn.leo.engine.listener.CellEventListener;
+import cn.leo.engine.listener.CellOnClickListener;
 import cn.leo.engine.listener.CellOnTouchListener;
+import cn.leo.engine.listener.OnCellAnimListener;
+import cn.leo.engine.listener.OnCellStateChangeListener;
 import cn.leo.engine.path.LinearPath;
 import cn.leo.engine.physics.CollisionDetection;
 import cn.leo.engine.scene.Scene;
@@ -66,6 +68,12 @@ public class FirstScene extends Scene {
         ImageCell cell = ImageCell.create(this, "pic/enemy2.png");
         cell.setRotate(180).setMirrorX(true);
         layer.addCell(cell);
+        setCellOnClick(cell, new CellOnClickListener() {
+            @Override
+            public void onClick(BaseCell cell) {
+                cell.setVisible(false);
+            }
+        });
     }
 
     /**
@@ -135,6 +143,22 @@ public class FirstScene extends Scene {
         };
         //获取敌机位置
         final CellProperty enemy = getCellProperty("enemy").get(0);
+        enemy.setCellAnimListener(new OnCellAnimListener() {
+            @Override
+            public void onAnimFinished(AnimCell animCell) {
+                enemy.hideCell();
+            }
+        });
+
+        //创建敌机爆炸动画
+        final AnimClip boom = AnimClip.create(this)
+                .addFrame("pic/enemy3_down1.png", 200)
+                .addFrame("pic/enemy3_down2.png", 200)
+                .addFrame("pic/enemy3_down3.png", 200)
+                .addFrame("pic/enemy3_down4.png", 200)
+                .addFrame("pic/enemy3_down5.png", 200)
+                .addFrame("pic/enemy3_down6.png", 200);
+
         subscribe(new Scheduler() {
             @Override
             public void event() {
@@ -146,12 +170,18 @@ public class FirstScene extends Scene {
                 ImageCell cell = bulletPool.getCell();
                 cell.setCenterToX(x + 30).setCenterToY(y);
                 //子弹事件监控
-                setCellEventListener("bullet", new CellEventListener<ImageCell>() {
+                setCellEventListener("bullet", new OnCellStateChangeListener<ImageCell>() {
                     @Override
                     public void onCellMove(ImageCell cell, float lastX, float newX, float lastY, float newY, float lastRotation, float newRotation) {
                         if (CollisionDetection.isCollision(enemy.getCell(), cell, 5)) {
                             //击中敌机
                             cell.recycle();
+                            int tag = (int) enemy.getCell().getTag();
+                            enemy.getCell().setTag(--tag);
+                            if (tag == 0) {
+                                enemy.playAnim(boom);
+
+                            }
                         }
                         if (newY < -cell.getHeight()) {
                             cell.recycle();
@@ -177,7 +207,8 @@ public class FirstScene extends Scene {
                 .setWidth(120)
                 .setHeight(180)
                 .setMirrorX(true)
-                .setCenterToX(getWidth() / 2);
+                .setCenterToX(getWidth() / 2)
+                .setTag(10);
         layer.addCell(animCell);
 
         addCellToControl("enemy", animCell);
@@ -190,7 +221,7 @@ public class FirstScene extends Scene {
         path.setTargetRotate(360);
         setCellPath("enemy", path);
         //监控轨迹
-        setCellEventListener("enemy", new CellEventListener() {
+        setCellEventListener("enemy", new OnCellStateChangeListener() {
             @Override
             public void onCellMoveFinished(BaseCell cell) {
                 path.setTargetY(random.nextInt(300));
@@ -234,7 +265,7 @@ public class FirstScene extends Scene {
         //向下滚动,速度每秒100dp
         setCellYSpeed("bg", 100);
         //监听滚动,一张到底后拼接到另一张开头,以做到无限循环
-        setCellEventListener("bg", new CellEventListener<ImageCell>() {
+        setCellEventListener("bg", new OnCellStateChangeListener<ImageCell>() {
             @Override
             public void onCellMove(ImageCell cell, float lastX, float newX, float lastY, float newY, float lastRotation, float newRotation) {
                 BaseCell top = bg1.getY() < bg2.getY() ? bg1 : bg2;

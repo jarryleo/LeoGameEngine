@@ -22,9 +22,9 @@ import cn.leo.engine.control.TouchControlImpl;
 import cn.leo.engine.control.VoiceControl;
 import cn.leo.engine.control.VoiceControlImpl;
 import cn.leo.engine.layer.Layer;
-import cn.leo.engine.listener.CellEventListener;
 import cn.leo.engine.listener.CellOnClickListener;
 import cn.leo.engine.listener.CellOnTouchListener;
+import cn.leo.engine.listener.OnCellStateChangeListener;
 import cn.leo.engine.path.BasePath;
 import cn.leo.engine.screen.ScreenUtil;
 
@@ -231,8 +231,8 @@ public abstract class Scene implements CellControl, TimerControl, TouchControl, 
     }
 
     @Override
-    public void setCellEventListener(String cellName, CellEventListener cellEventListener) {
-        mCellControl.setCellEventListener(cellName, cellEventListener);
+    public void setCellEventListener(String cellName, OnCellStateChangeListener cellStateChangeListener) {
+        mCellControl.setCellEventListener(cellName, cellStateChangeListener);
     }
 
     @Override

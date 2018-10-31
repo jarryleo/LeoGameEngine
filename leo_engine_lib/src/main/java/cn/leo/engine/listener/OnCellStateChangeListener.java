@@ -4,9 +4,10 @@ import cn.leo.engine.cell.BaseCell;
 
 /**
  * @author : Jarry Leo
- * @date : 2018/10/24 10:33
+ * @date : 2018/10/31 15:13
+ * 元素状态变化事件监听
  */
-public class CellEventListener<T extends BaseCell> {
+public abstract class OnCellStateChangeListener<T extends BaseCell> {
     /**
      * 元素出现
      *
@@ -26,15 +27,6 @@ public class CellEventListener<T extends BaseCell> {
     }
 
     /**
-     * 元素执行动画
-     *
-     * @param cell 元素
-     */
-    public void onCellPlayAnim(T cell) {
-
-    }
-
-    /**
      * 元素执行移动
      *
      * @param cell 元素
@@ -45,6 +37,7 @@ public class CellEventListener<T extends BaseCell> {
 
     /**
      * 元素移动结束
+     *
      * @param cell 元素
      */
     public void onCellMoveFinished(T cell) {

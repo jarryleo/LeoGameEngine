@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 
 import cn.leo.engine.cell.BaseCell;
 import cn.leo.engine.common.SystemTime;
+import cn.leo.engine.listener.OnCellAnimListener;
 import cn.leo.engine.screen.ScreenUtil;
 
 /**
@@ -55,9 +56,14 @@ public class AnimCell extends BaseCell<AnimCell> {
     private long mPausePassedTime;
 
     /**
-     * 缩放矩形
+     * 当前动画图像
      */
     private Bitmap mAnimBitmap;
+
+    /**
+     * 动画事件回调
+     */
+    private OnCellAnimListener mOnCellAnimListener;
 
     /**
      * 构造自身
@@ -136,7 +142,9 @@ public class AnimCell extends BaseCell<AnimCell> {
         }
         //播放结束并且不重复,动画元素隐藏
         if (mAnimBitmap == null) {
-            setVisible(false);
+            if (mOnCellAnimListener != null) {
+                mOnCellAnimListener.onAnimFinished(this);
+            }
             return;
         }
 
@@ -196,6 +204,9 @@ public class AnimCell extends BaseCell<AnimCell> {
      */
     public void start() {
         mStartTime = SystemTime.now();
+        if (mOnCellAnimListener != null) {
+            mOnCellAnimListener.onAnimStart(this);
+        }
     }
 
     /**
@@ -204,6 +215,10 @@ public class AnimCell extends BaseCell<AnimCell> {
     public void pause() {
         mIsPause = true;
         mPausePassedTime = SystemTime.now() - mStartTime;
+        if (mOnCellAnimListener != null) {
+            mOnCellAnimListener.onAnimPause(this);
+        }
+
     }
 
     /**
@@ -212,6 +227,9 @@ public class AnimCell extends BaseCell<AnimCell> {
     public void resume() {
         mIsPause = false;
         mPausePassedTime = 0;
+        if (mOnCellAnimListener != null) {
+            mOnCellAnimListener.onAnimResume(this);
+        }
     }
 
     /**
@@ -219,6 +237,9 @@ public class AnimCell extends BaseCell<AnimCell> {
      */
     public void stop() {
         mStartTime = 0;
+        if (mOnCellAnimListener != null) {
+            mOnCellAnimListener.onAnimFinished(this);
+        }
     }
 
     /**
@@ -266,6 +287,15 @@ public class AnimCell extends BaseCell<AnimCell> {
         return this;
     }
 
+    /**
+     * 设置动画监听
+     *
+     * @param onCellAnimListener 动画监听器
+     */
+    public AnimCell setOnCellAnimListener(OnCellAnimListener onCellAnimListener) {
+        mOnCellAnimListener = onCellAnimListener;
+        return this;
+    }
 
     @Override
     public void onDestroy() {

@@ -4,7 +4,8 @@ import cn.leo.engine.cell.BaseCell;
 import cn.leo.engine.cell.animation.AnimCell;
 import cn.leo.engine.cell.animation.AnimClip;
 import cn.leo.engine.common.SystemTime;
-import cn.leo.engine.listener.CellEventListener;
+import cn.leo.engine.listener.OnCellAnimListener;
+import cn.leo.engine.listener.OnCellStateChangeListener;
 import cn.leo.engine.path.BasePath;
 
 /**
@@ -27,15 +28,15 @@ public class CellProperty {
      */
     private long lastDrawTime;
     /**
-     * 元素回调
+     * 元素状态回调
      */
-    private CellEventListener mCellEventListener;
+    private OnCellStateChangeListener mCellEventListener;
     /**
      * 元素轨迹
      */
     private BasePath mBasePath;
 
-    public CellProperty(BaseCell cell) {
+    CellProperty(BaseCell cell) {
         mCell = cell;
     }
 
@@ -111,42 +112,42 @@ public class CellProperty {
         lastDrawTime = timeMillis;
     }
 
-    public void setCellEventListener(CellEventListener cellEventListener) {
+    public void setCellStateChangeListener(OnCellStateChangeListener cellEventListener) {
         mCellEventListener = cellEventListener;
     }
 
-    void hideCell() {
+    public void setCellAnimListener(OnCellAnimListener cellEventListener) {
+        if (mCell instanceof AnimCell) {
+            ((AnimCell) mCell).setOnCellAnimListener(cellEventListener);
+        }
+    }
+
+    public void hideCell() {
         mCell.setVisible(false);
         if (mCellEventListener != null) {
             mCellEventListener.onCellHide(mCell);
         }
     }
 
-    void showCell() {
+    public void showCell() {
         mCell.setVisible(true);
         if (mCellEventListener != null) {
             mCellEventListener.onCellShow(mCell);
         }
     }
 
-    void playAnim() {
+    public void playAnim() {
         if (mCell instanceof AnimCell) {
             AnimCell cell = (AnimCell) mCell;
             cell.start();
-            if (mCellEventListener != null) {
-                mCellEventListener.onCellPlayAnim(mCell);
-            }
         }
     }
 
-    void playAnim(AnimClip animClip) {
+    public void playAnim(AnimClip animClip) {
         if (mCell instanceof AnimCell) {
             AnimCell cell = (AnimCell) mCell;
             cell.setAnimClip(animClip, true);
             cell.start();
-            if (mCellEventListener != null) {
-                mCellEventListener.onCellPlayAnim(mCell);
-            }
         }
     }
 
