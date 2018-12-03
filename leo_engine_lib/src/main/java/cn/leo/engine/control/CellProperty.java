@@ -34,7 +34,7 @@ public class CellProperty {
     /**
      * 元素轨迹
      */
-    private BasePath mBasePath;
+    private BasePath mPath;
 
     CellProperty(BaseCell cell) {
         mCell = cell;
@@ -60,13 +60,13 @@ public class CellProperty {
         mYSpeed = ySpeed;
     }
 
-    public void setBasePath(BasePath basePath) {
-        basePath.setCell(mCell);
-        mBasePath = basePath;
+    public void setPath(BasePath path) {
+        path.setCell(mCell);
+        mPath = path;
     }
 
     void cellMove() {
-        if (mBasePath != null) {
+        if (mPath != null) {
             pathMove();
         } else {
             generalMove();
@@ -80,7 +80,7 @@ public class CellProperty {
         float lastX = mCell.getX();
         float lastY = mCell.getY();
         float lastRotate = mCell.getRotate();
-        boolean moveSuccess = mBasePath.onFrame();
+        boolean moveSuccess = mPath.onFrame();
         if (!moveSuccess && mCellEventListener != null) {
             mCellEventListener.onCellMoveFinished(mCell);
         } else if (moveSuccess) {

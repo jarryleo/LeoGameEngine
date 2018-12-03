@@ -130,7 +130,7 @@ public class CellControlImpl implements CellControl {
             return;
         }
         for (CellProperty property : cellProperty) {
-            property.setBasePath(path);
+            property.setPath(path);
         }
     }
 

@@ -1,11 +1,12 @@
 package cn.leo.engine.cell;
 
-import android.graphics.Bitmap;
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Picture;
 import android.support.annotation.NonNull;
 
-import cn.leo.engine.common.AssetsUtil;
+import cn.leo.engine.common.PicturePool;
 import cn.leo.engine.scene.Scene;
 import cn.leo.engine.screen.ScreenUtil;
 
@@ -16,21 +17,27 @@ import cn.leo.engine.screen.ScreenUtil;
  */
 public class ImageCell extends BaseCell<ImageCell> {
     /**
-     * bitmap图像
+     * 上下文
      */
-    private Bitmap mBitmap;
+    private Context mContext;
+    private String mFileName;
+    private int mPicWidth;
+    private int mPicHeight;
 
-    public static ImageCell create(Bitmap bitmap) {
-        return new ImageCell(bitmap);
-    }
-
-    private ImageCell(Bitmap bitmap) {
-        mBitmap = bitmap;
-    }
 
     public static ImageCell create(Scene scene, String assetsPicFileName) {
         return new ImageCell(scene, assetsPicFileName);
     }
+
+    public void setImage(String assetsPicFileName) {
+        mFileName = assetsPicFileName;
+        PicturePool.put(mContext, mFileName, getPaint());
+        Picture picture = PicturePool.getPicture(mFileName);
+        mPicWidth = picture.getWidth();
+        mPicHeight = picture.getHeight();
+        setSize();
+    }
+
 
     /**
      * 从资源文件夹加载图片
@@ -39,11 +46,8 @@ public class ImageCell extends BaseCell<ImageCell> {
      * @param assetsPicFileName 文件名
      */
     private ImageCell(Scene scene, String assetsPicFileName) {
-        Bitmap bitmapFromAsset = AssetsUtil.getBitmapFromAsset(scene.getContext(), assetsPicFileName);
-        if (bitmapFromAsset == null) {
-            throw new IllegalArgumentException("\"" + assetsPicFileName + "\" are not exist in assets folder");
-        }
-        setBitmap(bitmapFromAsset);
+        mContext = scene.getContext();
+        setImage(assetsPicFileName);
     }
 
     @Override
@@ -53,16 +57,13 @@ public class ImageCell extends BaseCell<ImageCell> {
 
     @Override
     public void draw(@NonNull Canvas canvas) {
-        if (mBitmap == null) {
-            return;
-        }
-        canvas.drawBitmap(mBitmap, 0, 0, getPaint());
+        canvas.drawPicture(PicturePool.getPicture(mFileName));
     }
 
     @Override
     public ImageCell setWidth(int width) {
         super.setWidth(width);
-        setScaleX(getWidthInPx() * 1f / mBitmap.getWidth());
+        setScaleX(getWidthInPx() * 1f / mPicWidth);
         return this;
     }
 
@@ -70,7 +71,7 @@ public class ImageCell extends BaseCell<ImageCell> {
     @Override
     public ImageCell setHeight(int height) {
         super.setHeight(height);
-        setScaleY(getHeightInPx() * 1f / mBitmap.getHeight());
+        setScaleY(getHeightInPx() * 1f / mPicHeight);
         return this;
     }
 
@@ -109,26 +110,20 @@ public class ImageCell extends BaseCell<ImageCell> {
         return TYPE_IMAGE;
     }
 
-    public Bitmap getBitmap() {
-        return mBitmap;
-    }
 
-    public ImageCell setBitmap(Bitmap bitmap) {
-        mBitmap = bitmap;
+    private void setSize() {
         if (getWidth() == 0) {
-            setWidth(ScreenUtil.px2dp(bitmap.getWidth()));
+            setWidth(ScreenUtil.px2dp(mPicWidth));
         }
         if (getHeight() == 0) {
-            setHeight(ScreenUtil.px2dp(bitmap.getHeight()));
+            setHeight(ScreenUtil.px2dp(mPicHeight));
         }
-        return this;
     }
 
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mBitmap.recycle();
-        mBitmap = null;
+        PicturePool.destroy(mFileName);
     }
 }

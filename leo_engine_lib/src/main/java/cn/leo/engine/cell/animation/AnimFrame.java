@@ -1,12 +1,12 @@
 package cn.leo.engine.cell.animation;
 
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.graphics.Paint;
+import android.graphics.Picture;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
-import cn.leo.engine.common.AssetsUtil;
-import cn.leo.engine.scene.Scene;
+import cn.leo.engine.common.PicturePool;
 
 /**
  * @author : Jarry Leo
@@ -18,28 +18,21 @@ public class AnimFrame {
     /**
      * 帧图像
      */
-    private Bitmap mBitmap;
+    private String mFileName;
     /**
      * 帧时长
      */
     private int mDuration;
 
-    public AnimFrame(@NonNull Bitmap bitmap, @IntRange(from = 1) int duration) {
-        mBitmap = bitmap;
+
+    public AnimFrame(Context context, @NonNull String assetsFileName, @IntRange(from = 1) int duration, Paint paint) {
+        mFileName = assetsFileName;
         mDuration = duration;
+        PicturePool.put(context, assetsFileName, paint);
     }
 
-    private AnimFrame(Context context, @NonNull String bitmapFile, @IntRange(from = 1) int duration) {
-        mBitmap = AssetsUtil.getBitmapFromAsset(context, bitmapFile);
-        mDuration = duration;
-    }
-
-    public AnimFrame(Scene scene, @NonNull String bitmapFile, @IntRange(from = 1) int duration) {
-        this(scene.getContext(), bitmapFile, duration);
-    }
-
-    public Bitmap getBitmap() {
-        return mBitmap;
+    public Picture getPicture() {
+        return PicturePool.getPicture(mFileName);
     }
 
     public int getDuration() {
@@ -47,7 +40,6 @@ public class AnimFrame {
     }
 
     public void onDestroy() {
-        mBitmap.recycle();
-        mBitmap = null;
+        PicturePool.destroy(mFileName);
     }
 }

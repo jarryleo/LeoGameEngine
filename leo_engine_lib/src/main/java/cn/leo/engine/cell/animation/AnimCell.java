@@ -1,8 +1,8 @@
 package cn.leo.engine.cell.animation;
 
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Picture;
 import android.support.annotation.NonNull;
 
 import cn.leo.engine.cell.BaseCell;
@@ -58,7 +58,7 @@ public class AnimCell extends BaseCell<AnimCell> {
     /**
      * 当前动画图像
      */
-    private Bitmap mAnimBitmap;
+    private Picture mAnimPicture;
 
     /**
      * 动画事件回调
@@ -87,7 +87,7 @@ public class AnimCell extends BaseCell<AnimCell> {
     @Override
     public AnimCell setWidth(int width) {
         super.setWidth(width);
-        setScaleX(getWidthInPx() * 1f / mAnimBitmap.getWidth());
+        setScaleX(getWidthInPx() * 1f / mAnimPicture.getWidth());
         return this;
     }
 
@@ -95,7 +95,7 @@ public class AnimCell extends BaseCell<AnimCell> {
     @Override
     public AnimCell setHeight(int height) {
         super.setHeight(height);
-        setScaleY(getHeightInPx() * 1f / mAnimBitmap.getHeight());
+        setScaleY(getHeightInPx() * 1f / mAnimPicture.getHeight());
         return this;
     }
 
@@ -141,14 +141,13 @@ public class AnimCell extends BaseCell<AnimCell> {
             return;
         }
         //播放结束并且不重复,动画元素隐藏
-        if (mAnimBitmap == null) {
+        if (mAnimPicture == null) {
             if (mOnCellAnimListener != null) {
                 mOnCellAnimListener.onAnimFinished(this);
             }
             return;
         }
-
-        canvas.drawBitmap(mAnimBitmap, 0, 0, getPaint());
+        canvas.drawPicture(mAnimPicture);
     }
 
     @Override
@@ -159,14 +158,14 @@ public class AnimCell extends BaseCell<AnimCell> {
         }
         if (mStartTime == 0) {
             //没有开始播放显示第一帧
-            mAnimBitmap = mAnimClip.getFrameBitmapFromTime(0);
+            mAnimPicture = mAnimClip.getFrameBitmapFromTime(0);
         } else {
             //画面暂停,保持动画不变
             if (mIsPause) {
                 mStartTime = SystemTime.now() - mPausePassedTime;
             }
             //开始播放
-            mAnimBitmap = mAnimClip.getFrameBitmapFromTime(SystemTime.now() - mStartTime);
+            mAnimPicture = mAnimClip.getFrameBitmapFromTime(SystemTime.now() - mStartTime);
         }
         //绘制当前动画帧图片,并且以不同的固定角作为锚点
         switch (mAnchorCorner) {
@@ -175,19 +174,19 @@ public class AnimCell extends BaseCell<AnimCell> {
                 break;
             case CORNER_TOP_RIGHT:
                 canvas.translate(getXInPx() +
-                        (mAnimClip.getFrame(0).getBitmap().getWidth()
-                                - mAnimBitmap.getWidth()), getYInPx());
+                        (mAnimClip.getFrame(0).getPicture().getWidth()
+                                - mAnimPicture.getWidth()), getYInPx());
                 break;
             case CORNER_BOTTOM_LEFT:
                 canvas.translate(getXInPx(),
-                        getYInPx() + (mAnimClip.getFrame(0).getBitmap().getHeight()
-                                - mAnimBitmap.getHeight()));
+                        getYInPx() + (mAnimClip.getFrame(0).getPicture().getHeight()
+                                - mAnimPicture.getHeight()));
                 break;
             case CORNER_BOTTOM_RIGHT:
                 canvas.translate(getXInPx()
-                                + (mAnimClip.getFrame(0).getBitmap().getWidth() - mAnimBitmap.getWidth()),
+                                + (mAnimClip.getFrame(0).getPicture().getWidth() - mAnimPicture.getWidth()),
                         getYInPx()
-                                + (mAnimClip.getFrame(0).getBitmap().getHeight() - mAnimBitmap.getHeight()));
+                                + (mAnimClip.getFrame(0).getPicture().getHeight() - mAnimPicture.getHeight()));
                 break;
             default:
                 break;
@@ -276,12 +275,12 @@ public class AnimCell extends BaseCell<AnimCell> {
      */
     public AnimCell setAnimClip(AnimClip animClip) {
         mAnimClip = animClip;
-        mAnimBitmap = mAnimClip.getFrame(0).getBitmap();
+        mAnimPicture = mAnimClip.getFrame(0).getPicture();
         if (getWidth() == 0) {
-            setWidth(ScreenUtil.px2dp(mAnimBitmap.getWidth()));
+            setWidth(ScreenUtil.px2dp(mAnimPicture.getWidth()));
         }
         if (getHeight() == 0) {
-            setHeight(ScreenUtil.px2dp(mAnimBitmap.getHeight()));
+            setHeight(ScreenUtil.px2dp(mAnimPicture.getHeight()));
         }
         mStartTime = 0;
         return this;

@@ -211,9 +211,11 @@ public class FirstScene extends Scene {
                 .setMirrorX(true)
                 .setCenterToX(getWidth() / 2)
                 .setTag(10);
+        AnimCell clone = animCell.clone();
         layer.addCell(animCell);
-
+        layer.addCell(clone);
         addCellToControl("enemy", animCell);
+        addCellToControl("enemy", clone);
         //轨迹移动
         final Random random = new Random();
         final LinearPath path = new LinearPath();

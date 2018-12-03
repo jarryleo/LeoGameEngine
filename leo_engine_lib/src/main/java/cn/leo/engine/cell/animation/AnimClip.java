@@ -1,6 +1,7 @@
 package cn.leo.engine.cell.animation;
 
-import android.graphics.Bitmap;
+import android.graphics.Paint;
+import android.graphics.Picture;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.util.SparseArray;
@@ -35,6 +36,10 @@ public class AnimClip {
      * 场景
      */
     private final Scene mScene;
+    /**
+     * 画笔
+     */
+    private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     public static AnimClip create(Scene scene) {
         return new AnimClip(scene);
@@ -64,7 +69,7 @@ public class AnimClip {
      * @return 本对象
      */
     public AnimClip addFrame(@NonNull String bitmapFile, @IntRange(from = 1) int duration) {
-        AnimFrame frame = new AnimFrame(mScene, bitmapFile, duration);
+        AnimFrame frame = new AnimFrame(mScene.getContext(), bitmapFile, duration, mPaint);
         mFrames.append(mTotalTime, frame);
         mTotalTime += frame.getDuration();
         return this;
@@ -97,14 +102,15 @@ public class AnimClip {
      * @param timeMills 动画执行时间
      * @return 图像
      */
-    public Bitmap getFrameBitmapFromTime(long timeMills) {
+    public Picture getFrameBitmapFromTime(long timeMills) {
         if (mLoop) {
             if (timeMills > mTotalTime) {
                 timeMills %= mTotalTime;
             }
         } else if (timeMills > mTotalTime) {
             if (mFillAfter) {
-                return getFrame(getFrameCount() - 1).getBitmap();
+
+                return getFrame(getFrameCount() - 1).getPicture();
             } else {
                 return null;
             }
@@ -112,10 +118,10 @@ public class AnimClip {
         for (int i = mFrames.size() - 1; i >= 0; i--) {
             int timestamp = mFrames.keyAt(i);
             if (timestamp <= timeMills) {
-                return mFrames.get(timestamp).getBitmap();
+                return mFrames.get(timestamp).getPicture();
             }
         }
-        return getFrame(getFrameCount() - 1).getBitmap();
+        return getFrame(getFrameCount() - 1).getPicture();
     }
 
     public boolean isLoop() {

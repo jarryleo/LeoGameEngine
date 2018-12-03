@@ -25,5 +25,6 @@ public class MainActivity extends AppCompatActivity {
         FirstScene firstScene = new FirstScene(mGameEngine);
         //开场
         mGameEngine.loadScene(firstScene);
+
     }
 }
