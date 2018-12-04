@@ -166,7 +166,7 @@ public abstract class Scene implements CellControl, TimerControl, TouchControl, 
                 mFps = (int) (1000 / l);
                 mLastShowFps = SystemTime.now();
             }
-            canvas.drawText("FPS:" + mFps, 10, 20, mPaint);
+            canvas.drawText("FPS:" + mFps, 10, 50, mPaint);
             mLastDrawTime = SystemTime.now();
         }
     }

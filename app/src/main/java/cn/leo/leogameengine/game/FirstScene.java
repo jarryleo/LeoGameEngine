@@ -67,6 +67,7 @@ public class FirstScene extends Scene {
 
     private void createEnemySmall(Layer layer) {
         ImageCell cell = ImageCell.create(this, "pic/enemy2.png");
+        cell.setWidth(40, true);
         cell.setRotate(180).setMirrorX(true);
         layer.addCell(cell);
         setCellOnClick(cell, new CellOnClickListener() {
@@ -165,7 +166,7 @@ public class FirstScene extends Scene {
             @Override
             public void event() {
                 //播放子弹声音
-                playSound(R.raw.bullet, false);
+                //playSound(R.raw.bullet, false);
                 //发射子弹
                 float x = player.getCell().getX();
                 float y = player.getCell().getY();

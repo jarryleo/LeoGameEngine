@@ -25,10 +25,10 @@ public class AnimFrame {
     private int mDuration;
 
 
-    public AnimFrame(Context context, @NonNull String assetsFileName, @IntRange(from = 1) int duration, Paint paint) {
+    public AnimFrame(Context context, @NonNull String assetsFileName, @IntRange(from = 1) int duration) {
         mFileName = assetsFileName;
         mDuration = duration;
-        PicturePool.put(context, assetsFileName, paint);
+        PicturePool.put(context, assetsFileName);
     }
 
     public Picture getPicture() {

@@ -11,11 +11,17 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author : Jarry Leo
  * @date : 2018/12/3 14:43
+ * 图片资源复用池，保证每个图片资源在内存中只存在一份
  */
 public class PicturePool {
 
     private static ConcurrentHashMap<String, Picture> mPicturePool = new ConcurrentHashMap<>();
     private static ConcurrentHashMap<String, Integer> mReference = new ConcurrentHashMap<>();
+    private static Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+    public static void put(Context context, String fileName) {
+        put(context, fileName, mPaint);
+    }
 
     public static void put(Context context, String fileName, Paint paint) {
         if (mPicturePool.containsKey(fileName)) {

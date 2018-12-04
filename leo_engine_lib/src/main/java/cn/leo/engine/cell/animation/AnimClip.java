@@ -1,6 +1,5 @@
 package cn.leo.engine.cell.animation;
 
-import android.graphics.Paint;
 import android.graphics.Picture;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
@@ -36,10 +35,6 @@ public class AnimClip {
      * 场景
      */
     private final Scene mScene;
-    /**
-     * 画笔
-     */
-    private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     public static AnimClip create(Scene scene) {
         return new AnimClip(scene);
@@ -69,7 +64,7 @@ public class AnimClip {
      * @return 本对象
      */
     public AnimClip addFrame(@NonNull String bitmapFile, @IntRange(from = 1) int duration) {
-        AnimFrame frame = new AnimFrame(mScene.getContext(), bitmapFile, duration, mPaint);
+        AnimFrame frame = new AnimFrame(mScene.getContext(), bitmapFile, duration);
         mFrames.append(mTotalTime, frame);
         mTotalTime += frame.getDuration();
         return this;
